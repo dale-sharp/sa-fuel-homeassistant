@@ -1,13 +1,15 @@
 {
   "domain": "sa_fuel_pricing",
   "name": "SA Fuel Pricing",
-  "codeowners": ["@dale-sharp"],
+  "codeowners": [
+    "@dale-sharp"
+  ],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/dale-sharp/sa-fuel-homeassistant#readme",
-  "issue_tracker": "https://github.com/dale-sharp/sa-fuel-homeassistant/issues",
   "integration_type": "service",
   "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/dale-sharp/sa-fuel-homeassistant/issues",
   "requirements": [],
   "version": "1.0.0"
 }
