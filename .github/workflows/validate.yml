@@ -1,0 +1,41 @@
+name: Validate
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run daily at midnight UTC — catches breakage from upstream HA/HACS changes
+    - cron: "0 0 * * *"
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions: {}
+
+jobs:
+  hassfest:
+    name: Hassfest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run hassfest validation
+        uses: home-assistant/actions/hassfest@master
+
+  hacs:
+    name: HACS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run HACS validation
+        uses: hacs/action@main
+        with:
+          category: integration
+          # Remove the 'ignore: brands' line once you have added brand images at
+          # custom_components/sa_fuel_pricing/brands/ (see HACS brand docs)
+          ignore: brands

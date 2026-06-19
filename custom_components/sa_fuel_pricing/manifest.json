@@ -1,0 +1,12 @@
+{
+  "domain": "sa_fuel_pricing",
+  "name": "SA Fuel Pricing",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/your-repo/sa_fuel_homeassistant#readme",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "1.0.0"
+}

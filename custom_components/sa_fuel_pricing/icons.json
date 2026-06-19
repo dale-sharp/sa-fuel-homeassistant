@@ -1,0 +1,14 @@
+{
+  "entity": {
+    "sensor": {
+      "unleaded": { "default": "mdi:gas-station" },
+      "diesel": { "default": "mdi:gas-station" },
+      "lpg": { "default": "mdi:gas-station" },
+      "premium_95": { "default": "mdi:gas-station" },
+      "premium_98": { "default": "mdi:gas-station" },
+      "e10": { "default": "mdi:gas-station" },
+      "premium_diesel": { "default": "mdi:gas-station" },
+      "e85": { "default": "mdi:gas-station" }
+    }
+  }
+}

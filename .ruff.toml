@@ -1,0 +1,33 @@
+# Based on https://github.com/home-assistant/core/blob/dev/pyproject.toml
+
+target-version = "py313"
+
+[lint]
+select = ["ALL"]
+
+ignore = [
+    "ANN401",  # Dynamically typed expressions (typing.Any) — used legitimately in HA patterns
+    "D203",    # no-blank-line-before-class (conflicts with formatter)
+    "D212",    # multi-line-summary-first-line (conflicts with formatter)
+    "COM812",  # missing-trailing-comma (conflicts with formatter)
+    "ISC001",  # single-line-implicit-string-concatenation (conflicts with formatter)
+    # Exception message style — HA core uses plain string literals throughout
+    "EM101",   # raw-string-in-exception
+    "EM102",   # f-string-in-exception
+    "TRY003",  # raise-vanilla-args
+]
+
+[lint.per-file-ignores]
+# Config flow uses assert as runtime guards for narrowing Optional types
+"custom_components/*/config_flow.py" = ["S101"]
+# Tests can use assert, magic values, and don't need full docstrings
+"tests/**/*.py" = ["S101", "PLR2004", "D"]
+
+[lint.flake8-pytest-style]
+fixture-parentheses = false
+
+[lint.pyupgrade]
+keep-runtime-typing = true
+
+[lint.mccabe]
+max-complexity = 25

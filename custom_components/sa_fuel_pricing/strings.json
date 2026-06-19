@@ -1,0 +1,161 @@
+{
+  "config": {
+    "step": {
+      "reauth_confirm": {
+        "title": "SA Fuel Pricing — Re-authenticate",
+        "description": "Your SAFPIS subscriber token is no longer valid. Please enter a new token.",
+        "data": {
+          "subscriber_token": "Subscriber Token"
+        },
+        "data_description": {
+          "subscriber_token": "Your new SAFPIS API subscriber token (GUID format)"
+        }
+      },
+      "reconfigure": {
+        "title": "SA Fuel Pricing — Reconfigure",
+        "description": "Update your SAFPIS subscriber token. The token must belong to the same account as the original setup.",
+        "data": {
+          "subscriber_token": "Subscriber Token"
+        },
+        "data_description": {
+          "subscriber_token": "Your SAFPIS API subscriber token (GUID format)"
+        }
+      },
+      "user": {
+        "title": "SA Fuel Pricing — Connect",
+        "description": "Enter your SAFPIS (South Australian Fuel Pricing Information Scheme) subscriber token. This will be validated against the API.",
+        "data": {
+          "subscriber_token": "Subscriber Token"
+        },
+        "data_description": {
+          "subscriber_token": "GUID-format token, e.g. 2FEB37D3-4326-4E30-8705-0FCE0519B6D1"
+        }
+      },
+      "cities": {
+        "title": "SA Fuel Pricing — Select Cities",
+        "description": "Choose one or more cities to track. There are {total_cities} SA cities containing {total_sites} fuel stations.\n\nLeave blank to include stations from all cities, or narrow down in the next steps.\n\nType to filter the list.",
+        "data": {
+          "selected_cities": "Cities"
+        },
+        "data_description": {
+          "selected_cities": "Only stations in the selected cities will be available in subsequent steps."
+        }
+      },
+      "suburbs": {
+        "title": "SA Fuel Pricing — Select Suburbs",
+        "description": "Optionally narrow your selection to specific suburbs within {selected_cities}.\n\nLeave blank to include all suburbs from your chosen cities.\n\nType to filter the list.",
+        "data": {
+          "selected_suburbs": "Suburbs"
+        },
+        "data_description": {
+          "selected_suburbs": "Select specific suburbs, or leave blank to include all suburbs from the chosen cities."
+        }
+      },
+      "sites": {
+        "title": "SA Fuel Pricing — Select Stations",
+        "description": "Optionally pick specific fuel stations within {filter_context}.\n\nLeave blank to include every station in your chosen areas.\n\nType to filter by name, address, or suburb.",
+        "data": {
+          "selected_sites": "Fuel stations"
+        },
+        "data_description": {
+          "selected_sites": "Select individual stations, or leave blank to include all stations from the chosen suburbs/cities."
+        }
+      },
+      "fuel_types": {
+        "title": "SA Fuel Pricing — Fuel Types & Polling",
+        "description": "Choose which fuel types to create sensors for, and how often to poll for updated prices.",
+        "data": {
+          "fuel_types": "Fuel types to track",
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "fuel_types": "A sensor will be created for each selected fuel type at each tracked station.",
+          "scan_interval": "How frequently (in minutes) to fetch updated prices. The API allows a minimum of 1 minute."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the SAFPIS API. Check your network connection and try again.",
+      "invalid_auth": "Invalid subscriber token. Please verify your token and try again.",
+      "forbidden": "Access denied. Your token may not have the required permissions.",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "SA Fuel Pricing is already configured.",
+      "cannot_connect": "Could not connect to the SAFPIS API.",
+      "wrong_account": "The new token belongs to a different account. Reconfiguration must use the same account."
+    }
+  },
+  "options": {
+    "step": {
+      "cities": {
+        "title": "SA Fuel Pricing — Select Cities",
+        "description": "Update the cities you want to track. There are {total_cities} SA cities containing {total_sites} fuel stations.\n\nLeave blank to include all cities.\n\nType to filter the list.",
+        "data": {
+          "selected_cities": "Cities"
+        },
+        "data_description": {
+          "selected_cities": "Only stations in the selected cities will be available in subsequent steps."
+        }
+      },
+      "suburbs": {
+        "title": "SA Fuel Pricing — Select Suburbs",
+        "description": "Optionally narrow to specific suburbs within {selected_cities}.\n\nLeave blank to include all suburbs.\n\nType to filter the list.",
+        "data": {
+          "selected_suburbs": "Suburbs"
+        },
+        "data_description": {
+          "selected_suburbs": "Select specific suburbs, or leave blank for all suburbs in the chosen cities."
+        }
+      },
+      "sites": {
+        "title": "SA Fuel Pricing — Select Stations",
+        "description": "Optionally pick specific stations within {filter_context}.\n\nLeave blank to include all stations in the chosen areas.\n\nType to filter by name, address, or suburb.",
+        "data": {
+          "selected_sites": "Fuel stations"
+        },
+        "data_description": {
+          "selected_sites": "Select individual stations, or leave blank for all stations in the chosen suburbs/cities."
+        }
+      },
+      "fuel_types": {
+        "title": "SA Fuel Pricing — Fuel Types & Polling",
+        "description": "Update which fuel types to track and how often to poll.",
+        "data": {
+          "fuel_types": "Fuel types to track",
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "fuel_types": "A sensor will be created for each selected fuel type at each tracked station.",
+          "scan_interval": "How frequently (in minutes) to fetch updated prices."
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Could not reconnect to the SAFPIS API to load station data."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "unleaded": { "name": "Unleaded" },
+      "diesel": { "name": "Diesel" },
+      "lpg": { "name": "LPG" },
+      "premium_95": { "name": "Premium Unleaded 95" },
+      "premium_98": { "name": "Premium Unleaded 98" },
+      "e10": { "name": "E10" },
+      "premium_diesel": { "name": "Premium Diesel" },
+      "e85": { "name": "E85" }
+    }
+  },
+  "exceptions": {
+    "cannot_connect": {
+      "message": "Unable to connect to the SAFPIS API: {error}"
+    },
+    "invalid_auth": {
+      "message": "SAFPIS API authentication failed. Check your subscriber token."
+    },
+    "update_failed": {
+      "message": "Failed to fetch fuel pricing data: {error}"
+    }
+  }
+}
