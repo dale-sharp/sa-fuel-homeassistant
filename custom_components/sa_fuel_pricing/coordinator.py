@@ -270,9 +270,7 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
             utcnow() - self._last_reference_refresh
         ) > REFERENCE_DATA_UPDATE_INTERVAL
 
-    def _resolve_active_site_ids(
-        self, sites: dict[int, Any]
-    ) -> set[int] | None:
+    def _resolve_active_site_ids(self, sites: dict[int, Any]) -> set[int] | None:
         """
         Return the set of site IDs to include, or None for no filter.
 
@@ -283,9 +281,7 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
         4. Nothing selected -> None (all sites)
         """
         if not (
-            self._selected_cities
-            or self._selected_suburbs
-            or self._selected_sites
+            self._selected_cities or self._selected_suburbs or self._selected_sites
         ):
             return None
 

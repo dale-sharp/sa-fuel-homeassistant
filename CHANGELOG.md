@@ -1,0 +1,65 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [1.1.0] - 2026-06-20
+
+### Fixed
+
+- **BREAKING** - Site selection filter now uses hierarchical precedence instead of additive
+  (union) behavior. The most specific level of selection takes exclusive precedence:
+  - Individual sites selected - ONLY those sites are included (suburb/city selections ignored)
+  - Suburbs selected, no individual sites - ONLY sites within those suburbs (city selections ignored)
+  - Cities selected, no suburbs or individual sites - ONLY sites within those cities
+  - Nothing selected - all sites (unchanged)
+
+  Previously, selecting any combination of cities, suburbs, and individual sites returned
+  the union of all matching sites. For example, selecting City=Adelaide and one individual
+  site in Kent Town would return that site PLUS every other site in Adelaide.
+
+  **Impact**: Users who relied on the additive behavior may see devices and entities removed
+  from Home Assistant after upgrading. Reconfigure the integration via
+  Settings > Devices & Services > SA Fuel Pricing > Configure to re-select the desired sites.
+
+### Changed
+
+- Extracted site filter logic from `_async_update_data()` into a dedicated
+  `_resolve_active_site_ids()` helper method. No behaviour change - internal refactor only.
+
+---
+
+## [1.0.1] - 2026-06-19
+
+### Fixed
+
+- Release workflow packaging now correctly structures the zip file for HACS installation.
+  The zip archive now contains `__init__.py`, `manifest.json`, etc. at its root so that
+  HACS extracts files directly into `custom_components/sa_fuel_pricing/` without path
+  duplication.
+
+---
+
+## [1.0.0] - 2026-06-19
+
+### Added
+
+- Initial release of the SA Fuel Pricing integration.
+- Five-step configuration wizard: subscriber token validation, city selection, suburb
+  selection, individual site selection, and fuel type and polling interval selection.
+- `DataUpdateCoordinator` polling the SAFPIS API with configurable interval (1-60 min,
+  default 5 min) and 24-hour reference data caching (brands, fuel types, geo regions,
+  sites).
+- One Home Assistant device per tracked fuel station; one sensor entity per available fuel
+  type showing the current price in AUD/L.
+- Supported fuel types: Unleaded (ULP), Diesel, Premium 95, Premium 98, E10, Premium
+  Diesel, LPG, E85.
+- Automatic dynamic device and entity discovery on each coordinator refresh.
+- Automatic stale device removal when a site no longer matches the active filter.
+- Reauthentication flow, reconfiguration (options) flow.
+- Diagnostics support with subscriber token redacted.
+- GitHub Actions workflows: HACS validation, hassfest, Ruff lint, and release packaging.
