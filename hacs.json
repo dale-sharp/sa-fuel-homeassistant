@@ -1,6 +1,10 @@
 {
   "name": "SA Fuel Pricing",
-  "description": "South Australian Fuel Pricing Information Scheme (SAFPIS) integration for Home Assistant.",
-  "render_readme": true,
-  "homeassistant": "2024.1.0"
+  "content_in_root": false,
+  "zip_release": true,
+  "filename": "sa_fuel_pricing.zip",
+  "hide_default_branch": false,
+  "country": "AU",
+  "homeassistant": "2024.1.0",
+  "hacs": "2.0.0"
 }
