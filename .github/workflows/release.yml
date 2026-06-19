@@ -30,11 +30,11 @@ jobs:
           echo "Version check passed: $VERSION"
 
       - name: Create release zip
-        # HACS installs from a zip of the custom_components/<domain>/ directory
+        # HACS installs from a zip of the integration files at the root
         run: |
-          cd custom_components
-          zip -r ../sa_fuel_pricing.zip sa_fuel_pricing/
-          cd ..
+          cd custom_components/sa_fuel_pricing
+          zip -r ../../sa_fuel_pricing.zip .
+          cd ../..
           echo "Created sa_fuel_pricing.zip"
 
       - name: Upload release asset
