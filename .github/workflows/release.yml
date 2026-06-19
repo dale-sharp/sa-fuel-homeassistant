@@ -32,7 +32,9 @@ jobs:
       - name: Create release zip
         # HACS installs from a zip of the custom_components/<domain>/ directory
         run: |
-          zip -r sa_fuel_pricing.zip custom_components/sa_fuel_pricing/
+          cd custom_components
+          zip -r ../sa_fuel_pricing.zip sa_fuel_pricing/
+          cd ..
           echo "Created sa_fuel_pricing.zip"
 
       - name: Upload release asset
