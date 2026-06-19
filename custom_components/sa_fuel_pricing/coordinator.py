@@ -304,9 +304,9 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
             raise UpdateFailed(f"Unexpected error fetching SAFPIS data: {err}") from err
 
         # --- Site filter ---
-        # Resolve the active set of site_ids from the three selection levels.
-        # The levels are additive: selecting a city AND individual sites returns
-        # the union (city sites + the individual sites).
+        # Hierarchical filter: most specific selection takes precedence.
+        # Priority: Individual Sites > Suburbs > Cities > All Sites.
+        # If individual sites are selected, only those are included (suburbs/cities ignored).
         active_site_ids: set[int] | None = None  # None = no filter = all sites
 
         if self._selected_cities or self._selected_suburbs or self._selected_sites:
@@ -315,13 +315,21 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
             selected_suburb_set = set(self._selected_suburbs)
             selected_site_set = set(self._selected_sites)
 
-            for site_id, site in sites.items():
-                if (
-                    site.city_region_id in selected_city_set
-                    or site.suburb_region_id in selected_suburb_set
-                    or site_id in selected_site_set
-                ):
-                    active_site_ids.add(site_id)
+            if selected_site_set:
+                # Individual sites selected - use ONLY those
+                for site_id in selected_site_set:
+                    if site_id in sites:
+                        active_site_ids.add(site_id)
+            elif selected_suburb_set:
+                # No individual sites, but suburbs selected - use ONLY suburb sites
+                for site_id, site in sites.items():
+                    if site.suburb_region_id in selected_suburb_set:
+                        active_site_ids.add(site_id)
+            elif selected_city_set:
+                # No sites/suburbs, but cities selected - use ONLY city sites
+                for site_id, site in sites.items():
+                    if site.city_region_id in selected_city_set:
+                        active_site_ids.add(site_id)
 
         # --- Fuel type + site filter ---
         selected_fuel_set = set(self._selected_fuel_ids)
