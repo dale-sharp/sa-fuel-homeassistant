@@ -4,7 +4,7 @@
   "codeowners": [],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/your-repo/sa_fuel_homeassistant#readme",
+  "documentation": "https://github.com/dale-sharp/sa-fuel-homeassistant#readme",
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "requirements": [],
