@@ -18,6 +18,12 @@
 
 **Action Required**: If you want sites from multiple regions, reconfigure the integration via Settings > Devices & Services > SA Fuel Pricing > Configure and explicitly select all desired cities, suburbs, or individual sites at the appropriate level.
 
+## Changes
+
+### Site filter extracted into helper method
+
+The site filter logic has been extracted from `_async_update_data()` into a dedicated `_resolve_active_site_ids()` helper method. This is an internal refactor with no behaviour change - it improves code clarity and keeps method complexity within project lint limits.
+
 ---
 
 # v1.0.1 - Bugfix Release
