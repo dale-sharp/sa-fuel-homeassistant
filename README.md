@@ -1,3 +1,5 @@
+![logo](https://github.com/dale-sharp/sa-fuel-homeassistant/blob/master/custom_components/sa_fuel_pricing/logo.png)
+
 # SA Fuel Pricing
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
