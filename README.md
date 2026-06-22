@@ -22,7 +22,7 @@ Each fuel station appears as a **device**. Each fuel type available at that stat
 ## Installation
 
 ### Via HACS (recommended)
-
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=dale-sharp&repository=sa-fuel-homeassistant)
 1. In HACS, go to **Integrations** → click the three-dot menu → **Custom repositories**
 2. Add `https://github.com/dale-sharp/sa-fuel-homeassistant` with category **Integration**
 3. Search for **SA Fuel Pricing** and install it
