@@ -1,4 +1,4 @@
-![logo](https://github.com/dale-sharp/sa-fuel-homeassistant/blob/master/custom_components/sa_fuel_pricing/logo.png)
+![logo](https://github.com/dale-sharp/sa-fuel-homeassistant/blob/main/custom_components/sa_fuel_pricing/logo.png)
 
 # SA Fuel Pricing
 
