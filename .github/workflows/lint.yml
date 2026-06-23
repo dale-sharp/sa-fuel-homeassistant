@@ -18,17 +18,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Ruff lint
+        uses: astral-sh/ruff-action@v3
         with:
-          python-version: "3.13"
-          cache: pip
+          args: check .
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Ruff format
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: format . --check
 
-      - name: Check lint
-        run: ruff check .
-
-      - name: Check format
-        run: ruff format . --check

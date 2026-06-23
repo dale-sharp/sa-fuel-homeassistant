@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Brand assets (`brand/dark_icon.png` and `brand/dark_logo.png`) for display in HACS and the
-  Home Assistant integrations gallery.
+- Brand assets (`brand/dark_icon.png` and `brand/dark_logo.png`) for display in HACS and
+  the Home Assistant integrations gallery.
 
 ---
 
