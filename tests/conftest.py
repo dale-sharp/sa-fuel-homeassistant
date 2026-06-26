@@ -199,6 +199,8 @@ def coordinator(
     return SAFuelDataCoordinator(hass, config_entry)
 
 
+
+
 @pytest.fixture
 def mock_api_client() -> MagicMock:
     """Pre-configured AsyncMock for SAFuelAPIClient returning test fixture data."""
