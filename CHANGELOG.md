@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.4] - 2026-06-27
+
+### Added
+
+- Comprehensive pytest test suite covering data models, coordinator, config flow, options
+  flow, sensors, and diagnostics (58 tests).
+- `DEVICE_IDENTIFIER_PREFIX` constant in `const.py` to eliminate duplicated `"sa_fuel_"`
+  string across `entity.py`, `__init__.py`, and `coordinator.py`.
+- Shared schema-builder functions (`_cities_schema`, `_suburbs_schema`, `_sites_schema`,
+  `_fuel_types_schema`) in `config_flow.py` to remove duplication between config and
+  options flows.
+
+### Fixed
+
+- Replaced `assert self._ref is not None` guards in config and options flow step methods
+  with `async_abort(reason="unknown")`, which is safe under Python's optimised mode (`-O`).
+- Removed unused `asyncio.gather` wrapper in `async_step_init` of the options flow.
+- Removed `_KNOWN_FUEL_NAMES` dict from `config_flow.py`; fuel name fallback now uses
+  `f"Fuel {fid}"` sourced from the API response.
+
+---
+
 ## [1.1.3] - 2026-06-24
 
 ### Added
