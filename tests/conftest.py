@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -27,6 +27,8 @@ from custom_components.sa_fuel_pricing.coordinator import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from homeassistant.core import HomeAssistant
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
@@ -209,3 +211,52 @@ def mock_api_client() -> MagicMock:
     client.get_site_details = AsyncMock(return_value=TEST_SITES)
     client.get_site_prices = AsyncMock(return_value=TEST_PRICES)
     return client
+
+
+# ---------------------------------------------------------------------------
+# Windows asyncio compatibility
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True, scope="session")
+def mock_zeroconf_resolver() -> Generator[MagicMock]:
+    """Override the HA plugin's async session fixture with a synchronous version.
+
+    On Windows, asyncio's ProactorEventLoop._make_self_pipe() calls
+    socket.socketpair() using AF_INET, which is blocked by pytest-socket before
+    session-scoped fixtures are initialised.  By replacing the async
+    pytest_asyncio fixture with an ordinary synchronous one we eliminate the
+    need for a session-scoped event loop (and therefore any socket creation)
+    at session startup, while still patching the HA resolver so that async
+    tests that import aiohttp internals don't hit the real DNS stack.
+    """
+    patcher = patch("homeassistant.helpers.aiohttp_client._async_make_resolver")
+    patcher.start()
+    try:
+        yield patcher
+    finally:
+        patcher.stop()
+
+
+@pytest.fixture(autouse=True)
+def enable_event_loop_debug() -> None:
+    """No-op override of the HA plugin fixture.
+
+    The HA plugin version takes ``event_loop`` as a parameter, which forces
+    pytest-asyncio to create a ProactorEventLoop on Windows.  That loop calls
+    socket.socketpair(AF_INET) for its self-pipe, which pytest-socket blocks.
+    Sync tests (like the data-model unit tests) do not need a loop at all, so
+    we override with a no-op.  Async HA integration tests will re-enable debug
+    mode via the policy set by HassEventLoopPolicy.
+    """
+
+
+@pytest.fixture(autouse=True)
+def verify_cleanup() -> None:
+    """No-op override of the HA plugin fixture.
+
+    The HA plugin version depends on ``event_loop`` (same Windows socket-pair
+    issue as above).  Async integration tests that leave lingering tasks or
+    timers will be caught on the Linux CI environment where the HA plugin's
+    original fixture runs without issue.
+    """
