@@ -1,4 +1,5 @@
 """Unit tests for SAFuelData, SiteDetail, and SitePrice data models."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -18,6 +19,7 @@ def _price(raw: float, date: str = "2026-06-18T03:31:00") -> SitePrice:
 
 
 # --- SitePrice.price_dollars ---
+
 
 def test_price_normal() -> None:
     assert _price(1579.0).price_dollars == 1.579
@@ -41,6 +43,7 @@ def test_price_zero() -> None:
 
 # --- SitePrice.last_updated_local ---
 
+
 def test_last_updated_valid_utc_string() -> None:
     result = _price(1579.0, "2026-06-18T03:31:00").last_updated_local
     assert isinstance(result, datetime)
@@ -55,6 +58,7 @@ def test_last_updated_malformed_string() -> None:
 
 
 # --- SAFuelData default factories ---
+
 
 def test_sadata_instances_do_not_share_mutable_state() -> None:
     a = SAFuelData()
