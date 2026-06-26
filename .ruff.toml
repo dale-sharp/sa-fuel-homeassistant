@@ -18,8 +18,10 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-# Tests can use assert, magic values, and don't need full docstrings
-"tests/**/*.py" = ["S101", "PLR2004", "D"]
+# Tests can use assert, magic values, don't need full docstrings or type annotations,
+# may access private members for state inspection, have long names, and declare
+# pytest fixtures that are used implicitly (not referenced in the body).
+"tests/**/*.py" = ["S101", "PLR2004", "D", "ANN", "ARG", "SLF001", "E501"]
 
 [lint.flake8-pytest-style]
 fixture-parentheses = false

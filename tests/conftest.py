@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import sys
 from pathlib import Path
@@ -10,6 +11,7 @@ from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+import pytest_socket
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.sa_fuel_pricing.const import (
@@ -238,6 +240,40 @@ def mock_zeroconf_resolver() -> Generator[MagicMock]:
         yield patcher
     finally:
         patcher.stop()
+
+
+@pytest.fixture
+def event_loop() -> Generator[asyncio.AbstractEventLoop]:
+    """Override event_loop to allow ProactorEventLoop creation on Windows.
+
+    pytest_homeassistant_custom_component's pytest_runtest_setup hook calls
+    pytest_socket.disable_socket() BEFORE fixture setup runs.  On Windows,
+    asyncio.ProactorEventLoop._make_self_pipe() needs socket.socketpair() and
+    socket.accept() — both of which use socket.socket from the module globals
+    (now replaced by GuardedSocket, which blocks all AF_INET creation).  We
+    temporarily restore the real socket class during event-loop construction,
+    then re-apply the restriction so tests still cannot open arbitrary sockets.
+    """
+    if sys.platform == "win32":
+        pytest_socket.enable_socket()
+
+    policy = asyncio.get_event_loop_policy()
+    loop = policy.new_event_loop()
+    loop.__pytest_asyncio = True  # suppresses pytest_asyncio DeprecationWarning
+    asyncio.set_event_loop(loop)
+
+    if sys.platform == "win32":
+        pytest_socket.socket_allow_hosts(["127.0.0.1"])
+        pytest_socket.disable_socket(allow_unix_socket=True)
+
+    try:
+        yield loop
+    finally:
+        if not loop.is_closed():
+            with contextlib.suppress(Exception):
+                loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+        asyncio.set_event_loop(None)
 
 
 @pytest.fixture(autouse=True)
