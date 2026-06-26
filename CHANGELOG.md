@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Comprehensive pytest test suite covering data models, coordinator, config flow, options
-  flow, sensors, and diagnostics (58 tests).
+  flow, sensors, and diagnostics (58 tests). Error-path tests assert expected log messages
+  via `caplog`; test output is kept clean by suppressing expected log noise from the HA
+  loader and integration debug messages.
 - `DEVICE_IDENTIFIER_PREFIX` constant in `const.py` to eliminate duplicated `"sa_fuel_"`
   string across `entity.py`, `__init__.py`, and `coordinator.py`.
 - Shared schema-builder functions (`_cities_schema`, `_suburbs_schema`, `_sites_schema`,
