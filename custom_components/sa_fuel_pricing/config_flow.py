@@ -53,18 +53,6 @@ if TYPE_CHECKING:
 
 _LOGGER = logging.getLogger(__name__)
 
-# Human-readable fuel type names — fallback if API call fails
-_KNOWN_FUEL_NAMES: dict[int, str] = {
-    2: "Unleaded (ULP)",
-    3: "Diesel",
-    4: "LPG",
-    5: "Premium Unleaded 95",
-    8: "Premium Unleaded 98",
-    12: "E10",
-    14: "Premium Diesel",
-    19: "E85",
-}
-
 
 # ---------------------------------------------------------------------------
 # Lightweight data structures used only within the flow
@@ -300,7 +288,7 @@ def _fuel_selector(ref: _FlowReferenceData) -> SelectSelector:
     options = [
         SelectOptionDict(
             value=str(fid),
-            label=ref.fuel_types.get(fid, _KNOWN_FUEL_NAMES.get(fid, f"Fuel {fid}")),
+            label=ref.fuel_types.get(fid, f"Fuel {fid}"),
         )
         for fid in available_ids
     ]
@@ -393,7 +381,8 @@ class SAFuelPricingConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle city selection — narrow which stations will be shown."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             self._city_ids = [int(v) for v in user_input.get(CONF_SELECTED_CITIES, [])]
             return await self.async_step_suburbs()
@@ -420,7 +409,8 @@ class SAFuelPricingConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle suburb selection — optional further narrowing within chosen cities."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             self._suburb_ids = [
                 int(v) for v in user_input.get(CONF_SELECTED_SUBURBS, [])
@@ -451,7 +441,8 @@ class SAFuelPricingConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle individual site selection — optional pin to specific stations."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             self._site_ids = [int(v) for v in user_input.get(CONF_SELECTED_SITES, [])]
             return await self.async_step_fuel_types()
@@ -480,7 +471,8 @@ class SAFuelPricingConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle fuel type and polling interval selection."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             selected_fuel_ids = [int(v) for v in user_input.get(CONF_FUEL_TYPES, [])]
             scan_interval = int(
@@ -635,12 +627,10 @@ class SAFuelPricingOptionsFlow(OptionsFlow):
         """
         try:
             session = async_get_clientsession(self.hass)
-            fuel_type_data, *_ = await asyncio.gather(
-                _api_get(
-                    session,
-                    self._token,
-                    f"/Subscriber/GetCountryFuelTypes?countryId={SA_COUNTRY_ID}",
-                ),
+            fuel_type_data = await _api_get(
+                session,
+                self._token,
+                f"/Subscriber/GetCountryFuelTypes?countryId={SA_COUNTRY_ID}",
             )
             fuel_types = {
                 f["FuelId"]: f["Name"] for f in fuel_type_data.get("Fuels", [])
@@ -656,7 +646,8 @@ class SAFuelPricingOptionsFlow(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle city selection step."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             self._city_ids = [int(v) for v in user_input.get(CONF_SELECTED_CITIES, [])]
             return await self.async_step_suburbs()
@@ -681,7 +672,8 @@ class SAFuelPricingOptionsFlow(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle suburb selection step."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             self._suburb_ids = [
                 int(v) for v in user_input.get(CONF_SELECTED_SUBURBS, [])
@@ -711,7 +703,8 @@ class SAFuelPricingOptionsFlow(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle individual site selection step."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             self._site_ids = [int(v) for v in user_input.get(CONF_SELECTED_SITES, [])]
             return await self.async_step_fuel_types()
@@ -739,7 +732,8 @@ class SAFuelPricingOptionsFlow(OptionsFlow):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle fuel type and polling interval selection step."""
-        assert self._ref is not None
+        if self._ref is None:
+            return self.async_abort(reason="unknown")
         if user_input is not None:
             selected_fuel_ids = [int(v) for v in user_input.get(CONF_FUEL_TYPES, [])]
             scan_interval = int(

@@ -18,8 +18,6 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-# Config flow uses assert as runtime guards for narrowing Optional types
-"custom_components/*/config_flow.py" = ["S101"]
 # Tests can use assert, magic values, and don't need full docstrings
 "tests/**/*.py" = ["S101", "PLR2004", "D"]
 
