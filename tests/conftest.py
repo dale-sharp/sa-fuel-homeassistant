@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -215,6 +216,26 @@ def mock_api_client() -> MagicMock:
     client.get_site_details = AsyncMock(return_value=TEST_SITES)
     client.get_site_prices = AsyncMock(return_value=TEST_PRICES)
     return client
+
+
+# ---------------------------------------------------------------------------
+# Log noise suppression
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def suppress_ha_loader_warning() -> Generator:
+    """Suppress HA's informational warning about finding a custom integration.
+
+    homeassistant.loader emits a WARNING for every custom integration it loads.
+    This is expected behaviour in all tests; suppressing it keeps the output
+    clean without hiding genuinely unexpected log messages.
+    """
+    logger = logging.getLogger("homeassistant.loader")
+    original_level = logger.level
+    logger.setLevel(logging.ERROR)
+    yield
+    logger.setLevel(original_level)
 
 
 # ---------------------------------------------------------------------------

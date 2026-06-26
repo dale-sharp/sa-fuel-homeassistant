@@ -128,7 +128,7 @@ async def test_options_flow_fuel_type_change_creates_entry(hass, config_entry):
     assert result["data"]["scan_interval"] == 10
 
 
-async def test_options_flow_api_failure_on_open_aborts(hass, config_entry):
+async def test_options_flow_api_failure_on_open_aborts(hass, config_entry, caplog):
     with patch(
         "custom_components.sa_fuel_pricing.config_flow._api_get",
         AsyncMock(side_effect=aiohttp.ClientError("network error")),
@@ -137,3 +137,4 @@ async def test_options_flow_api_failure_on_open_aborts(hass, config_entry):
 
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "cannot_connect"
+    assert "Failed to fetch SAFPIS reference data in options flow" in caplog.text

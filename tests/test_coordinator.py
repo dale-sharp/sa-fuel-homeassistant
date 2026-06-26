@@ -264,12 +264,13 @@ async def test_restore_stash_skips_reference_calls_on_next_refresh(
 # --- Error handling ---
 
 
-async def test_update_failed_propagates(hass, coordinator, mock_api_client):
+async def test_update_failed_propagates(hass, coordinator, mock_api_client, caplog):
     mock_api_client.get_site_prices = AsyncMock(side_effect=UpdateFailed("boom"))
     with patch.object(coordinator, "get_api", return_value=mock_api_client):
         await coordinator.async_refresh()
 
     assert coordinator.last_update_success is False
+    assert "Error fetching sa_fuel_pricing data" in caplog.text
 
 
 async def test_config_entry_auth_failed_propagates(hass, coordinator, mock_api_client):
