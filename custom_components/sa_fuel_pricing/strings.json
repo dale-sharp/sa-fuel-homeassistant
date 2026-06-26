@@ -83,7 +83,8 @@
     "abort": {
       "already_configured": "SA Fuel Pricing is already configured.",
       "cannot_connect": "Could not connect to the SAFPIS API.",
-      "wrong_account": "The new token belongs to a different account. Reconfiguration must use the same account."
+      "wrong_account": "The new token belongs to a different account. Reconfiguration must use the same account.",
+      "unknown": "An unexpected error occurred. Please restart the setup."
     }
   },
   "options": {
@@ -132,7 +133,8 @@
       }
     },
     "abort": {
-      "cannot_connect": "Could not reconnect to the SAFPIS API to load station data."
+      "cannot_connect": "Could not reconnect to the SAFPIS API to load station data.",
+      "unknown": "An unexpected error occurred. Please reopen options."
     }
   },
   "entity": {

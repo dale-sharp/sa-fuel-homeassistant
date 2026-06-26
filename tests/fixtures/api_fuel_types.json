@@ -1,0 +1,9 @@
+{
+  "Fuels": [
+    {"FuelId": 2, "Name": "Unleaded"},
+    {"FuelId": 3, "Name": "Diesel"},
+    {"FuelId": 5, "Name": "Premium Unleaded 95"},
+    {"FuelId": 12, "Name": "E10"},
+    {"FuelId": 6, "Name": "ULSD"}
+  ]
+}

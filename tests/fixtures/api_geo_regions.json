@@ -1,0 +1,8 @@
+{
+  "GeographicRegions": [
+    {"GeoRegionLevel": 2, "GeoRegionId": 189, "Name": "Adelaide", "Abbrev": "Adelaide", "GeoRegionParentId": 4},
+    {"GeoRegionLevel": 2, "GeoRegionId": 190, "Name": "Barossa", "Abbrev": "Barossa", "GeoRegionParentId": 4},
+    {"GeoRegionLevel": 1, "GeoRegionId": 170227225, "Name": "Dry Creek", "Abbrev": "Dry Creek", "GeoRegionParentId": 189},
+    {"GeoRegionLevel": 1, "GeoRegionId": 170227300, "Name": "Nuriootpa", "Abbrev": "Nuriootpa", "GeoRegionParentId": 190}
+  ]
+}

@@ -5,7 +5,7 @@ from __future__ import annotations
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DEVICE_IDENTIFIER_PREFIX, DOMAIN
 from .coordinator import SAFuelDataCoordinator, SiteDetail
 
 
@@ -33,7 +33,7 @@ class SAFuelEntity(CoordinatorEntity[SAFuelDataCoordinator]):
 
         self._attr_device_info = DeviceInfo(
             entry_type=DeviceEntryType.SERVICE,
-            identifiers={(DOMAIN, f"sa_fuel_{site.site_id}")},
+            identifiers={(DOMAIN, f"{DEVICE_IDENTIFIER_PREFIX}{site.site_id}")},
             name=site.name,
             manufacturer=site.brand_name,
             model=site.address,
