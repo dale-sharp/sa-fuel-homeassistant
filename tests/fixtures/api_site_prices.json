@@ -1,0 +1,10 @@
+{
+  "SitePrices": [
+    {"SiteId": 61205460, "FuelId": 2, "CollectionMethod": "T", "TransactionDateUtc": "2026-06-18T03:31:00", "Price": 1579.0},
+    {"SiteId": 61205460, "FuelId": 3, "CollectionMethod": "T", "TransactionDateUtc": "2026-06-18T03:31:00", "Price": 9999.0},
+    {"SiteId": 61501009, "FuelId": 2, "CollectionMethod": "T", "TransactionDateUtc": "2026-06-18T03:29:00", "Price": 1599.0},
+    {"SiteId": 61501009, "FuelId": 5, "CollectionMethod": "T", "TransactionDateUtc": "2026-06-18T03:29:00", "Price": 1799.0},
+    {"SiteId": 61501012, "FuelId": 12, "CollectionMethod": "T", "TransactionDateUtc": "2026-06-18T01:41:15", "Price": 1450.0},
+    {"SiteId": 61501012, "FuelId": 6, "CollectionMethod": "T", "TransactionDateUtc": "2026-06-18T01:41:15", "Price": 1350.0}
+  ]
+}

@@ -32,6 +32,10 @@ config/*
 .DS_Store
 
 # API sample data and local-only documentation
+docs/
 api_*.json
 api_variable.txt
 SAFPIS_API*.md
+
+# Allow test fixture files despite the api_*.json exclusion above
+!tests/fixtures/api_*.json
