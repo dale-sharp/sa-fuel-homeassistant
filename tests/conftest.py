@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -239,24 +241,22 @@ def mock_zeroconf_resolver() -> Generator[MagicMock]:
 
 
 @pytest.fixture(autouse=True)
-def enable_event_loop_debug() -> None:
-    """No-op override of the HA plugin fixture.
-
-    The HA plugin version takes ``event_loop`` as a parameter, which forces
-    pytest-asyncio to create a ProactorEventLoop on Windows.  That loop calls
-    socket.socketpair(AF_INET) for its self-pipe, which pytest-socket blocks.
-    Sync tests (like the data-model unit tests) do not need a loop at all, so
-    we override with a no-op.  Async HA integration tests will re-enable debug
-    mode via the policy set by HassEventLoopPolicy.
-    """
+def enable_event_loop_debug(request: pytest.FixtureRequest) -> None:
+    """Enable asyncio debug mode — skipped on Windows to avoid socket-pair conflict."""
+    if sys.platform != "win32":
+        loop = request.getfixturevalue("event_loop")
+        loop.set_debug(True)
 
 
 @pytest.fixture(autouse=True)
-def verify_cleanup() -> None:
-    """No-op override of the HA plugin fixture.
+def verify_cleanup(request: pytest.FixtureRequest) -> Generator:
+    """Verify no tasks leak after each test.
 
-    The HA plugin version depends on ``event_loop`` (same Windows socket-pair
-    issue as above).  Async integration tests that leave lingering tasks or
-    timers will be caught on the Linux CI environment where the HA plugin's
-    original fixture runs without issue.
+    Skipped on Windows to avoid the socket-pair conflict with ProactorEventLoop.
     """
+    yield
+    if sys.platform != "win32":
+        loop = request.getfixturevalue("event_loop")
+        pending = [t for t in asyncio.all_tasks(loop) if not t.done()]
+        if pending:
+            pytest.fail(f"Test left {len(pending)} pending task(s): {pending!r}")
