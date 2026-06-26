@@ -15,6 +15,7 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 pythonpath = ["."]
+log_cli = false
 
 [tool.coverage.run]
 source = ["custom_components/sa_fuel_pricing"]

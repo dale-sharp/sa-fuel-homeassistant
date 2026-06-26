@@ -224,18 +224,52 @@ def mock_api_client() -> MagicMock:
 
 
 @pytest.fixture(autouse=True)
-def suppress_ha_loader_warning() -> Generator:
-    """Suppress HA's informational warning about finding a custom integration.
+def suppress_expected_log_noise() -> Generator:
+    """Raise log levels for loggers that produce expected noise during tests.
 
-    homeassistant.loader emits a WARNING for every custom integration it loads.
-    This is expected behaviour in all tests; suppressing it keeps the output
-    clean without hiding genuinely unexpected log messages.
+    - homeassistant.loader: emits an INFO/WARNING for every custom integration
+      it loads — expected in all tests, not actionable.
+    - custom_components.sa_fuel_pricing: DEBUG messages (refresh cadence,
+      timing) are not meaningful in test output; ERROR messages from
+      intentional error-path tests are captured via capture_logs_without_propagation.
     """
-    logger = logging.getLogger("homeassistant.loader")
-    original_level = logger.level
-    logger.setLevel(logging.ERROR)
+    loggers = [
+        logging.getLogger("homeassistant.loader"),
+        logging.getLogger("custom_components.sa_fuel_pricing"),
+    ]
+    original_levels = [(lg, lg.level) for lg in loggers]
+    for lg in loggers:
+        lg.setLevel(logging.CRITICAL)
     yield
-    logger.setLevel(original_level)
+    for lg, level in original_levels:
+        lg.setLevel(level)
+
+
+@contextlib.contextmanager
+def capture_logs_without_propagation(
+    caplog_fixture: pytest.LogCaptureFixture,
+    logger_name: str,
+    level: int = logging.ERROR,
+) -> Generator:
+    """Capture log records at ``level`` from ``logger_name`` for assertion,
+    without propagating them to root-logger handlers (live log, etc.).
+
+    Sets propagate=False on the named logger and attaches caplog's handler
+    directly, so records are asserted via caplog.text but never appear in
+    live output.
+    """
+    logger = logging.getLogger(logger_name)
+    original_propagate = logger.propagate
+    original_level = logger.level
+    logger.propagate = False
+    logger.setLevel(level)
+    logger.addHandler(caplog_fixture.handler)
+    try:
+        yield
+    finally:
+        logger.removeHandler(caplog_fixture.handler)
+        logger.propagate = original_propagate
+        logger.setLevel(original_level)
 
 
 # ---------------------------------------------------------------------------

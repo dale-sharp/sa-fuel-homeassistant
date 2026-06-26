@@ -32,6 +32,7 @@ from .conftest import (
     TEST_FUEL_TYPES,
     TEST_GEO_REGIONS,
     TEST_SITES,
+    capture_logs_without_propagation,
 )
 
 
@@ -265,8 +266,13 @@ async def test_restore_stash_skips_reference_calls_on_next_refresh(
 
 
 async def test_update_failed_propagates(hass, coordinator, mock_api_client, caplog):
-    mock_api_client.get_site_prices = AsyncMock(side_effect=UpdateFailed("boom"))
-    with patch.object(coordinator, "get_api", return_value=mock_api_client):
+    with (
+        capture_logs_without_propagation(
+            caplog, "custom_components.sa_fuel_pricing.coordinator"
+        ),
+        patch.object(coordinator, "get_api", return_value=mock_api_client),
+    ):
+        mock_api_client.get_site_prices = AsyncMock(side_effect=UpdateFailed("boom"))
         await coordinator.async_refresh()
 
     assert coordinator.last_update_success is False

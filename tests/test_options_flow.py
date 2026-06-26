@@ -20,6 +20,7 @@ from custom_components.sa_fuel_pricing.const import (
     CONF_SELECTED_SUBURBS,
     DOMAIN,
 )
+from tests.conftest import capture_logs_without_propagation
 
 # Allow HA's loader to discover custom_components/sa_fuel_pricing during tests.
 pytestmark = pytest.mark.usefixtures("enable_custom_integrations")
@@ -129,9 +130,14 @@ async def test_options_flow_fuel_type_change_creates_entry(hass, config_entry):
 
 
 async def test_options_flow_api_failure_on_open_aborts(hass, config_entry, caplog):
-    with patch(
-        "custom_components.sa_fuel_pricing.config_flow._api_get",
-        AsyncMock(side_effect=aiohttp.ClientError("network error")),
+    with (
+        capture_logs_without_propagation(
+            caplog, "custom_components.sa_fuel_pricing.config_flow"
+        ),
+        patch(
+            "custom_components.sa_fuel_pricing.config_flow._api_get",
+            AsyncMock(side_effect=aiohttp.ClientError("network error")),
+        ),
     ):
         result = await hass.config_entries.options.async_init(config_entry.entry_id)
 
