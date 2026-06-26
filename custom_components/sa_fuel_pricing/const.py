@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import timedelta
 
 DOMAIN = "sa_fuel_pricing"
+DEVICE_IDENTIFIER_PREFIX = "sa_fuel_"
 
 # Configuration keys
 CONF_SUBSCRIBER_TOKEN = "subscriber_token"  # noqa: S105

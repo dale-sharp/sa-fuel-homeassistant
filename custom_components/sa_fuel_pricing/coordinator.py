@@ -25,6 +25,7 @@ from .const import (
     CONF_SELECTED_SUBURBS,
     CONF_SUBSCRIBER_TOKEN,
     DEFAULT_SCAN_INTERVAL,
+    DEVICE_IDENTIFIER_PREFIX,
     DOMAIN,
     PRICE_DIVISOR,
     PRICE_UNAVAILABLE,
@@ -404,7 +405,7 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
         device_registry = dr.async_get(self.hass)
         for stale_id in stale_site_ids:
             device = device_registry.async_get_device(
-                identifiers={(DOMAIN, f"sa_fuel_{stale_id}")}
+                identifiers={(DOMAIN, f"{DEVICE_IDENTIFIER_PREFIX}{stale_id}")}
             )
             if device:
                 _LOGGER.debug("Removing stale device for site_id %s", stale_id)

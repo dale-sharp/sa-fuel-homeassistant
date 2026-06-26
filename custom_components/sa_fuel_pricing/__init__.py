@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 
+from .const import DEVICE_IDENTIFIER_PREFIX
 from .coordinator import SAFuelData, SAFuelDataCoordinator
 
 if TYPE_CHECKING:
@@ -74,9 +75,9 @@ async def async_remove_config_entry_device(
 
     # Extract the site_id from the device identifier (format: "sa_fuel_{site_id}")
     for domain, identifier in device_entry.identifiers:
-        if domain == entry.domain and identifier.startswith("sa_fuel_"):
+        if domain == entry.domain and identifier.startswith(DEVICE_IDENTIFIER_PREFIX):
             try:
-                site_id = int(identifier.removeprefix("sa_fuel_"))
+                site_id = int(identifier.removeprefix(DEVICE_IDENTIFIER_PREFIX))
             except ValueError:
                 return True
             # Only allow deletion if the site has no active prices
