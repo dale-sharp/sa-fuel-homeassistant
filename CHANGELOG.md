@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.3] - 2026-06-24
+
+### Added
+
+- Version bump for removing brand ignore from HACS validation Action
+
+---
+
 ## [1.1.2] - 2026-06-24
 
 ### Added

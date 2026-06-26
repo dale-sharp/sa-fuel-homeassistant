@@ -36,6 +36,4 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
-          # Remove the 'ignore: brands' line once you have added brand images at
-          # custom_components/sa_fuel_pricing/brands/ (see HACS brand docs)
-          ignore: brands
+
