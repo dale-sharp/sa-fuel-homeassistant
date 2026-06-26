@@ -143,6 +143,8 @@ async def test_timeout_shows_cannot_connect_error(hass):
         )
 
     assert result["errors"]["base"] == "cannot_connect"
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "user"
 
 
 async def test_duplicate_token_aborts(hass):

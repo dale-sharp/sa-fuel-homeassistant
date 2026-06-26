@@ -87,6 +87,9 @@ async def test_second_fetch_within_24h_skips_reference_endpoints(
         await coordinator.async_refresh()
 
     mock_api_client.get_brands.assert_not_called()
+    mock_api_client.get_fuel_types.assert_not_called()
+    mock_api_client.get_geo_regions.assert_not_called()
+    mock_api_client.get_site_details.assert_not_called()
     mock_api_client.get_site_prices.assert_called_once()
 
 

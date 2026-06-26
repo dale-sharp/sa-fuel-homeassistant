@@ -53,27 +53,6 @@ _MOCK_REF = _FlowReferenceData(
 )
 
 
-async def _open_options_flow(hass, config_entry):
-    """Open the options flow and advance past async_step_init."""
-    with (
-        patch(
-            "custom_components.sa_fuel_pricing.config_flow._api_get",
-            AsyncMock(
-                return_value={
-                    "Fuels": [
-                        {"FuelId": k, "Name": v} for k, v in _TEST_FUEL_TYPES.items()
-                    ]
-                }
-            ),
-        ),
-        patch(
-            "custom_components.sa_fuel_pricing.config_flow._fetch_reference_data",
-            AsyncMock(return_value=_MOCK_REF),
-        ),
-    ):
-        return await hass.config_entries.options.async_init(config_entry.entry_id)
-
-
 async def test_options_flow_opens_with_existing_cities_preselected(hass, config_entry):
     entry = MockConfigEntry(
         domain=DOMAIN,
