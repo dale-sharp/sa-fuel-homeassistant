@@ -1,0 +1,8 @@
+{
+  "name": "sa-fuel-homeassistant",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "dev",
+  "postCreateCommand": "uv sync"
+}
