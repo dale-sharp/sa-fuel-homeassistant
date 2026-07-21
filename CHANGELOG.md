@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.5] - 2026-07-22
+
+### Fixed
+
+- Fixed #25: a Linux-only test teardown `TypeError` in the DNS-resolver mock, caused by
+  native Windows dev silently testing against a ~1-year-stale `homeassistant` release (a
+  Python-3.13.2 resolution-fork threshold kept Windows on `2025.4.4` while CI/devcontainer
+  already tracked current). Root-caused by dropping native-Windows dev/test support
+  entirely — the devcontainer is now the only supported path, matching the same decision
+  already made in the sibling `free-games-homeassistant` repo.
+
+### Changed
+
+- Removed the `pymicro-vad`/`pyspeex-noise` Windows-only dependency override and narrowed
+  `requires-python` to `>=3.13.2,<3.14` (matching the devcontainer's actual Python version);
+  `uv.lock` now resolves a single, unforked `homeassistant` version everywhere.
+- Simplified `tests/conftest.py`'s event-loop/DNS-resolver fixtures — removed all
+  Windows-specific branching, no longer needed.
+
 ## [1.1.4] - 2026-06-27
 
 ### Added

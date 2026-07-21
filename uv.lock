@@ -1920,7 +1920,7 @@ wheels = [
 
 [[package]]
 name = "sa-fuel-homeassistant"
-version = "1.1.4"
+version = "1.1.5"
 source = { virtual = "." }
 
 [package.dev-dependencies]
