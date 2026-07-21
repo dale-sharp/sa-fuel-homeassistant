@@ -108,7 +108,7 @@ Reference data (station names, addresses, brands, geographic regions) is cached 
 After setup you can adjust your configuration at any time:
 
 - **Options** (gear icon on the integration card) — re-run the city/suburb/station/fuel wizard with your current selections pre-populated
-- **Reconfigure** — replace your subscriber token (e.g. if it was rotated), must be the same SAFPIS account
+- **Reconfigure** — replace your subscriber token. SAFPIS does not have a concept of accounts — your token *is* your subscriber identity and is also used as the integration's unique key. **Warning:** if your new token belongs to a different subscriber, it will break the link to all existing devices and entities with no automatic recovery path; you would need to manually update the unique keys in your entity/device registry to restore them.
 - **Re-authenticate** — triggered automatically if the API returns a 401; prompts for a new token
 
 ---
