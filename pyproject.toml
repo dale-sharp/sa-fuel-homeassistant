@@ -8,6 +8,8 @@ dependencies = []
 dev = [
     "pytest-homeassistant-custom-component>=0.13.0",
     "pytest-cov>=5.0.0",
+    "ruff>=0.15.22",
+    "ty>=0.0.61",
 ]
 
 [tool.pytest.ini_options]
@@ -25,6 +27,12 @@ exclude_lines = [
     "pragma: no cover",
     "if TYPE_CHECKING:",
 ]
+
+[tool.ty.environment]
+python-version = "3.13"
+
+[tool.ty.rules]
+blanket-ignore-comment = "error"
 
 [tool.uv]
 override-dependencies = [

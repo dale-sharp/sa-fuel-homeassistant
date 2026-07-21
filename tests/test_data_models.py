@@ -63,5 +63,5 @@ def test_last_updated_malformed_string() -> None:
 def test_sadata_instances_do_not_share_mutable_state() -> None:
     a = SAFuelData()
     b = SAFuelData()
-    a.sites[99] = object()  # type: ignore[assignment]
+    a.sites[99] = object()  # ty: ignore[invalid-assignment]
     assert 99 not in b.sites

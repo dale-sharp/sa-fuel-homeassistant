@@ -8,10 +8,18 @@ import aiohttp
 import pytest
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import UpdateFailed
+from multidict import CIMultiDict, CIMultiDictProxy
+from yarl import URL
 
 from custom_components.sa_fuel_pricing.coordinator import SAFuelAPIClient
 
 from .conftest import TEST_BRANDS, TEST_FUEL_TYPES, TEST_GEO_REGIONS, load_fixture
+
+_DUMMY_REQUEST_INFO = aiohttp.RequestInfo(
+    url=URL("http://example.com"),
+    method="GET",
+    headers=CIMultiDictProxy(CIMultiDict()),
+)
 
 
 def _make_mock_session(fixture_name: str) -> MagicMock:
@@ -31,7 +39,7 @@ def _make_error_session(status: int) -> MagicMock:
     """Return a mock session whose raise_for_status raises a ClientResponseError."""
     mock_response = AsyncMock()
     mock_response.raise_for_status = MagicMock(
-        side_effect=aiohttp.ClientResponseError(None, None, status=status)
+        side_effect=aiohttp.ClientResponseError(_DUMMY_REQUEST_INFO, (), status=status)
     )
     mock_cm = AsyncMock()
     mock_cm.__aenter__ = AsyncMock(return_value=mock_response)
