@@ -290,9 +290,9 @@ def mock_zeroconf_resolver() -> Generator[MagicMock]:
     tests that import aiohttp internals don't hit the real DNS stack.
     """
     patcher = patch("homeassistant.helpers.aiohttp_client._async_make_resolver")
-    patcher.start()
+    mock = patcher.start()
     try:
-        yield patcher
+        yield mock
     finally:
         patcher.stop()
 
@@ -312,9 +312,10 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop]:
     if sys.platform == "win32":
         pytest_socket.enable_socket()
 
-    policy = asyncio.get_event_loop_policy()
-    loop = policy.new_event_loop()
-    loop.__pytest_asyncio = True  # suppresses pytest_asyncio DeprecationWarning
+    loop = asyncio.new_event_loop()
+    setattr(
+        loop, "__pytest_asyncio", True
+    )  # suppresses pytest_asyncio DeprecationWarning
     asyncio.set_event_loop(loop)
 
     if sys.platform == "win32":

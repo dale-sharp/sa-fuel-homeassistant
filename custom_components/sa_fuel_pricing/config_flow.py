@@ -24,6 +24,7 @@ from homeassistant.helpers.selector import (
     NumberSelectorConfig,
     NumberSelectorMode,
     SelectOptionDict,
+    Selector,
     SelectSelector,
     SelectSelectorConfig,
     SelectSelectorMode,
@@ -209,7 +210,7 @@ async def _fetch_reference_data(
 # ---------------------------------------------------------------------------
 
 
-def _city_selector(ref: _FlowReferenceData) -> SelectSelector:
+def _city_selector(ref: _FlowReferenceData) -> Selector[SelectSelectorConfig]:
     """Return a multi-select selector for all cities that have active sites."""
     options = [
         SelectOptionDict(value=str(cid), label=name)
@@ -228,7 +229,7 @@ def _city_selector(ref: _FlowReferenceData) -> SelectSelector:
 def _suburb_selector(
     ref: _FlowReferenceData,
     city_ids: set[int],
-) -> SelectSelector:
+) -> Selector[SelectSelectorConfig]:
     """Return a selector for suburbs that belong to the selected cities."""
     options = [
         SelectOptionDict(
@@ -252,7 +253,7 @@ def _site_selector(
     ref: _FlowReferenceData,
     suburb_ids: set[int],
     city_ids: set[int],
-) -> SelectSelector:
+) -> Selector[SelectSelectorConfig]:
     """Return a selector for sites, filtered to the chosen suburbs or cities."""
 
     def _site_in_scope(s: _SiteSummary) -> bool:
@@ -282,7 +283,7 @@ def _site_selector(
     )
 
 
-def _fuel_selector(ref: _FlowReferenceData) -> SelectSelector:
+def _fuel_selector(ref: _FlowReferenceData) -> Selector[SelectSelectorConfig]:
     """Return a multi-select selector for available SA fuel types."""
     available_ids = sorted(fid for fid in ref.fuel_types if fid in ALL_SA_FUEL_IDS)
     options = [
@@ -302,7 +303,7 @@ def _fuel_selector(ref: _FlowReferenceData) -> SelectSelector:
     )
 
 
-def _scan_interval_selector() -> NumberSelector:
+def _scan_interval_selector() -> Selector[NumberSelectorConfig]:
     """Return a number selector for the polling interval in minutes."""
     return NumberSelector(
         NumberSelectorConfig(

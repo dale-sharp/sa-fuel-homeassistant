@@ -15,7 +15,7 @@ jobs:
       contents: write   # needed to upload release assets
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Verify version matches tag
         # Ensures the version in manifest.json matches the Git tag (e.g. v1.2.3 → 1.2.3)
@@ -38,6 +38,6 @@ jobs:
           echo "Created sa_fuel_pricing.zip"
 
       - name: Upload release asset
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: sa_fuel_pricing.zip
