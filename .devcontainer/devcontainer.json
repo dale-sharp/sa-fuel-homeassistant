@@ -4,5 +4,13 @@
     "dockerfile": "Dockerfile"
   },
   "remoteUser": "dev",
+  "containerEnv": {
+    // Keeps the venv off the bind-mounted workspace. On Windows hosts, installing wheels
+    // that ship symlinked license files (e.g. orjson, pytest-cov) into a bind mount backed
+    // by NTFS fails with EPERM on the symlink-copy step — verified during devcontainer
+    // testing. Locating the venv on the container's own filesystem instead avoids this
+    // entirely; uv still resolves/runs against the mounted pyproject.toml/uv.lock normally.
+    "UV_PROJECT_ENVIRONMENT": "/home/dev/.venv"
+  },
   "postCreateCommand": "uv sync"
 }
