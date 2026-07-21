@@ -119,12 +119,6 @@ New fuel stations that appear in the API are automatically added as devices on t
 
 ---
 
-## Contributing
-
-Pull requests are welcome. The project uses [Ruff](https://docs.astral.sh/ruff/) for linting and formatting — run `ruff check .` and `ruff format .` before submitting. CI runs automatically on every pull request via GitHub Actions.
-
----
-
 ## Licence
 
 See [LICENSE](LICENSE).
