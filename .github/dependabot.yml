@@ -1,0 +1,45 @@
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 3
+    target-branch: "main"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    assignees:
+      - dale-sharp
+    groups:
+      # homeassistant, pytest-homeassistant-custom-component, aiohttp,
+      # pytest-asyncio, and pytest are structurally coupled:
+      # pytest-homeassistant-custom-component pins exact homeassistant,
+      # aiohttp, pytest-asyncio, and pytest versions. Bumping any one of them
+      # alone can produce an unsatisfiable `uv lock`. josepy and pyjwt are
+      # coupled the same way transitively. Grouped preemptively here since
+      # this repo shares the identical test harness dependency with
+      # free-games-homeassistant, where this exact failure mode was observed.
+      home-assistant-test-harness:
+        patterns:
+          - "homeassistant"
+          - "pytest-homeassistant-custom-component"
+          - "aiohttp"
+          - "pytest-asyncio"
+          - "pytest"
+          - "josepy"
+          - "pyjwt"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    cooldown:
+      default-days: 3
+    assignees:
+      - dale-sharp
