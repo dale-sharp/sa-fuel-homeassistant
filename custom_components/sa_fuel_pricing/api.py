@@ -70,7 +70,7 @@ class SitePrice:
             if dt is None:
                 return None
             return as_local(dt)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             return None
 
 

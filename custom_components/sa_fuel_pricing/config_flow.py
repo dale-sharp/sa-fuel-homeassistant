@@ -666,7 +666,7 @@ class SAFuelPricingOptionsFlow(OptionsFlow):
                 f["FuelId"]: f["Name"] for f in fuel_type_data.get("Fuels", [])
             }
             self._ref = await _fetch_reference_data(self.hass, self._token, fuel_types)
-        except (ValueError, TimeoutError, aiohttp.ClientError):
+        except ValueError, TimeoutError, aiohttp.ClientError:
             _LOGGER.exception("Failed to fetch SAFPIS reference data in options flow")
             return self.async_abort(reason="cannot_connect")
 
