@@ -26,7 +26,8 @@ if TYPE_CHECKING:
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
     from . import SAFuelConfigEntry
-    from .coordinator import SAFuelDataCoordinator, SiteDetail, SitePrice
+    from .api import SiteDetail, SitePrice
+    from .coordinator import SAFuelDataCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 

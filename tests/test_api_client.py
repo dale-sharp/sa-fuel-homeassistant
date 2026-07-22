@@ -11,7 +11,7 @@ from homeassistant.helpers.update_coordinator import UpdateFailed
 from multidict import CIMultiDict, CIMultiDictProxy
 from yarl import URL
 
-from custom_components.sa_fuel_pricing.coordinator import SAFuelAPIClient
+from custom_components.sa_fuel_pricing.api import SAFuelAPIClient
 
 from .conftest import TEST_BRANDS, TEST_FUEL_TYPES, TEST_GEO_REGIONS, load_fixture
 

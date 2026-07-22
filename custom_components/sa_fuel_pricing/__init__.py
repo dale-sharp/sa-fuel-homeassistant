@@ -9,11 +9,13 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 
 from .const import DEVICE_IDENTIFIER_PREFIX
-from .coordinator import SAFuelData, SAFuelDataCoordinator
+from .coordinator import SAFuelDataCoordinator
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers import device_registry as dr
+
+    from .api import SAFuelData
 
 _LOGGER = logging.getLogger(__name__)
 

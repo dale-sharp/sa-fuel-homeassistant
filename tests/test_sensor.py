@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
+from custom_components.sa_fuel_pricing.api import SAFuelData
 from custom_components.sa_fuel_pricing.const import FUEL_IDS_DISABLED_BY_DEFAULT
-from custom_components.sa_fuel_pricing.coordinator import SAFuelData
 from custom_components.sa_fuel_pricing.sensor import SAFuelSensor, async_setup_entry
 
 from .conftest import (

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.6] - 2026-07-22
+
+### Changed
+
+- Split `coordinator.py` into `api.py` (data models `SiteDetail`/`SitePrice`/`SAFuelData`
+  and the `SAFuelAPIClient` HTTP client) and a trimmed `coordinator.py`
+  (`SAFuelDataCoordinator` only), matching `free-games-homeassistant`'s own module
+  boundary. No behavior change — pure internal reorganization.
+
 ## [1.1.5] - 2026-07-22
 
 ### Fixed

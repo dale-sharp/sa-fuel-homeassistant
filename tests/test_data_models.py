@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from custom_components.sa_fuel_pricing.coordinator import SAFuelData, SitePrice
+from custom_components.sa_fuel_pricing.api import SAFuelData, SitePrice
 
 
 def _price(raw: float, date: str = "2026-06-18T03:31:00") -> SitePrice:

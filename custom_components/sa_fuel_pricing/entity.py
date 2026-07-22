@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DEVICE_IDENTIFIER_PREFIX, DOMAIN
-from .coordinator import SAFuelDataCoordinator, SiteDetail
+from .coordinator import SAFuelDataCoordinator
+
+if TYPE_CHECKING:
+    from .api import SiteDetail
 
 
 class SAFuelEntity(CoordinatorEntity[SAFuelDataCoordinator]):
