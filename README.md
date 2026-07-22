@@ -119,6 +119,42 @@ New fuel stations that appear in the API are automatically added as devices on t
 
 ---
 
+## Known Limitations
+
+- **South Australia only.** SAFPIS (South Australian Fuel Pricing Information Scheme) only covers fuel stations within South Australia — there is no equivalent data source for other states via this API.
+- **Poll frequency floor.** The SAFPIS API asks that prices are not polled more than once per minute; the integration's configurable interval (1–60 min) does not change how often the upstream data itself refreshes.
+- **Token is your unique identity.** See [Reconfiguration](#reconfiguration) — replacing your token with one from a different SAFPIS subscriber breaks the link to existing devices and entities, with no automatic recovery path.
+
+---
+
+## Troubleshooting
+
+- **No stations appear after setup**: Check that your city/suburb/station selections in the setup wizard (or Options) aren't narrower than intended — each level filters down from the previous one. Leave a level blank to include everything under it.
+- **A fuel type shows as unavailable**: The station doesn't currently stock that fuel type — see [Price](#price). This is expected, not a bug.
+- **A "SA Fuel Pricing feed unreachable" repair issue appears**: The SAFPIS API has failed to respond for 3 consecutive polls. This usually resolves on its own — the issue clears automatically once a poll succeeds again. If it persists, check your internet connection and whether [SAFPIS](https://www.safuelpricinginformation.com.au/) itself is experiencing an outage.
+
+---
+
+## Removal
+
+**Via the UI:** go to **Settings → Devices & Services → SA Fuel Pricing**, click the three-dot menu on the integration card, and select **Delete**.
+
+**Manual installs:** UI removal only deletes the config entry, not the integration files copied in during a manual install. Also delete the `custom_components/sa_fuel_pricing/` directory from your Home Assistant config directory.
+
+---
+
+## Acknowledgements
+
+### Data Source
+
+All fuel pricing data comes from the [SAFPIS (South Australian Fuel Pricing Information Scheme)](https://www.safuelpricinginformation.com.au/).
+
+### Branding
+
+Icon and logo assets by [Amber McMahon](https://thefoxesden.carrd.co/).
+
+---
+
 ## Licence
 
 See [LICENSE](LICENSE).
