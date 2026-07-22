@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from homeassistant.helpers import device_registry as dr
 
 from custom_components.sa_fuel_pricing import (
-    PLATFORMS,
     _STASH_KEY,
+    PLATFORMS,
     _async_update_listener,
     async_remove_config_entry_device,
     async_setup_entry,
@@ -186,9 +186,7 @@ async def test_update_listener_stashes_reference_data_and_reloads(
     config_entry.runtime_data = coordinator
     coordinator.data = TEST_DATA
 
-    with patch.object(
-        hass.config_entries, "async_reload", AsyncMock()
-    ) as mock_reload:
+    with patch.object(hass.config_entries, "async_reload", AsyncMock()) as mock_reload:
         await _async_update_listener(hass, config_entry)
 
     assert hass.data[_STASH_KEY].sites == TEST_DATA.sites
@@ -202,9 +200,7 @@ async def test_update_listener_skips_stash_when_coordinator_has_no_data(
     config_entry.runtime_data = coordinator
     coordinator.data = None
 
-    with patch.object(
-        hass.config_entries, "async_reload", AsyncMock()
-    ) as mock_reload:
+    with patch.object(hass.config_entries, "async_reload", AsyncMock()) as mock_reload:
         await _async_update_listener(hass, config_entry)
 
     assert _STASH_KEY not in hass.data

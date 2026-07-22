@@ -57,6 +57,18 @@ def test_last_updated_malformed_string() -> None:
     assert _price(1579.0, "not-a-date").last_updated_local is None
 
 
+def test_last_updated_none_value_returns_none() -> None:
+    price = SitePrice(
+        site_id=1,
+        fuel_id=2,
+        fuel_name="Unleaded",
+        price_raw=1579.0,
+        transaction_date_utc=None,  # ty: ignore[invalid-argument-type]
+        collection_method="T",
+    )
+    assert price.last_updated_local is None
+
+
 # --- SAFuelData default factories ---
 
 
