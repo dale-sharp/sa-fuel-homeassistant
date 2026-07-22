@@ -24,7 +24,6 @@ source = ["custom_components/sa_fuel_pricing"]
 
 [tool.coverage.report]
 exclude_lines = [
-    "pragma: no cover",
     "if TYPE_CHECKING:",
 ]
 

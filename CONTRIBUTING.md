@@ -63,9 +63,7 @@ uv run ty check
 ```
 
 - **Coverage:** current baseline is 100% overall, exceeding the Platinum-tier target of
-  95%+/no module below ~90%. New code should maintain full coverage; a `# pragma: no cover`
-  exclusion (already configured in `pyproject.toml`) is acceptable only for genuinely
-  untestable defensive branches, not as a shortcut around writing a real test.
+  95%+/no module below ~90%. New code should maintain full coverage.
 - `ruff format`/`ruff check` and `ty check` are separate jobs in `.github/workflows/lint.yml`.
   Running them locally first catches a CI failure before you push.
 - **If `ruff check .` shows only `EXE002` findings inside the devcontainer** on a Windows
