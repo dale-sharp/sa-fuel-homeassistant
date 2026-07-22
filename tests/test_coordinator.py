@@ -11,6 +11,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import UpdateFailed
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
+from custom_components.sa_fuel_pricing.api import SAFuelData
 from custom_components.sa_fuel_pricing.const import (
     CONF_FUEL_TYPES,
     CONF_SELECTED_CITIES,
@@ -21,7 +22,6 @@ from custom_components.sa_fuel_pricing.const import (
     DEVICE_IDENTIFIER_PREFIX,
     DOMAIN,
 )
-from custom_components.sa_fuel_pricing.api import SAFuelData
 from custom_components.sa_fuel_pricing.coordinator import SAFuelDataCoordinator
 
 from .conftest import (

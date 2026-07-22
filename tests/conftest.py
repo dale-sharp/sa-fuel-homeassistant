@@ -13,6 +13,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
+from custom_components.sa_fuel_pricing.api import SAFuelData, SiteDetail, SitePrice
 from custom_components.sa_fuel_pricing.const import (
     CONF_FUEL_TYPES,
     CONF_SELECTED_CITIES,
@@ -22,7 +23,6 @@ from custom_components.sa_fuel_pricing.const import (
     DEFAULT_SCAN_INTERVAL_MINUTES,
     DOMAIN,
 )
-from custom_components.sa_fuel_pricing.api import SAFuelData, SiteDetail, SitePrice
 from custom_components.sa_fuel_pricing.coordinator import SAFuelDataCoordinator
 
 if TYPE_CHECKING:

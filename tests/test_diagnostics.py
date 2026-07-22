@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 
-from custom_components.sa_fuel_pricing.const import CONF_SUBSCRIBER_TOKEN
 from custom_components.sa_fuel_pricing.api import SAFuelData, SiteDetail
+from custom_components.sa_fuel_pricing.const import CONF_SUBSCRIBER_TOKEN
 from custom_components.sa_fuel_pricing.diagnostics import (
     async_get_config_entry_diagnostics,
 )

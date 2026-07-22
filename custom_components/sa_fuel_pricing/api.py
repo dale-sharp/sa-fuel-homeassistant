@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
 from homeassistant.exceptions import ConfigEntryAuthFailed
@@ -21,6 +20,9 @@ from .const import (
     SA_GEO_REGION_ID,
     SA_GEO_REGION_LEVEL,
 )
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 @dataclass
