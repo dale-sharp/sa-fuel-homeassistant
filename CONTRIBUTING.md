@@ -32,14 +32,12 @@ cd sa-fuel-homeassistant
 uv sync
 ```
 
-**Recommended: use the devcontainer** in `.devcontainer/`. Native Windows dev also works
-today, via a `pymicro-vad`/`pyspeex-noise` override in `pyproject.toml` that keeps those
-Linux-only transitive dependencies out of the Windows resolve — but that's a hand-maintained
-allowlist against whatever `homeassistant`/`pytest-homeassistant-custom-component` currently
-pull in, and a routine Dependabot version bump could introduce a new incompatible dependency
-at any time. The devcontainer avoids that risk entirely by developing on Linux. Open the
-folder in an editor with Dev Containers support (VS Code's "Reopen in Container", JetBrains
-Gateway), or drive it directly with the [devcontainer CLI](https://github.com/devcontainers/cli):
+**The devcontainer in `.devcontainer/` is the only supported way to run `uv sync`/`pytest`
+locally.** Later Home Assistant releases unconditionally import POSIX-only stdlib modules
+(`fcntl`, `resource`) that don't exist on Windows, at any Python version — there is no way
+to route around this with version pinning, only by developing on Linux. Open the folder in
+an editor with Dev Containers support (VS Code's "Reopen in Container", JetBrains Gateway),
+or drive it directly with the [devcontainer CLI](https://github.com/devcontainers/cli):
 
 ```bash
 npx --yes @devcontainers/cli up --workspace-folder .

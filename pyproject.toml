@@ -1,7 +1,7 @@
 [project]
 name = "sa-fuel-homeassistant"
-version = "1.1.4"
-requires-python = ">=3.13"
+version = "1.1.5"
+requires-python = ">=3.13.2,<3.14"
 dependencies = []
 
 [dependency-groups]
@@ -33,12 +33,3 @@ python-version = "3.13"
 
 [tool.ty.rules]
 blanket-ignore-comment = "error"
-
-[tool.uv]
-override-dependencies = [
-    # pymicro-vad and pyspeex-noise are transitive deps of homeassistant that
-    # only have source distributions; they fail to build on Windows.
-    # Override them to be Linux-only so Windows dev environments can sync.
-    "pymicro-vad>=1.0.1; sys_platform == 'linux'",
-    "pyspeex-noise>=1.0.2; sys_platform == 'linux'",
-]
