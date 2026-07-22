@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.7] - 2026-07-22
+
+### Added
+
+- Fixed #31: a Home Assistant repair issue is now raised after 3 consecutive
+  SAFPIS API fetch failures, and automatically cleared on the next successful
+  update. The issue is scoped per config entry (supports multiple SAFPIS
+  accounts) and names the affected entry in its description. Authentication
+  failures are excluded — those already trigger Home Assistant's own reauth
+  flow.
+
 ## [1.1.6] - 2026-07-22
 
 ### Changed

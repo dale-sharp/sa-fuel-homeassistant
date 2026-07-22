@@ -149,6 +149,12 @@
       "e85": { "name": "E85" }
     }
   },
+  "issues": {
+    "persistent_fetch_failure": {
+      "title": "SA Fuel Pricing feed unreachable",
+      "description": "The \"{entry_title}\" SA Fuel Pricing integration has been unable to fetch data from the SAFPIS API for {threshold} consecutive attempts. This usually resolves on its own; if it persists, check your internet connection and that the SAFPIS service is operational."
+    }
+  },
   "exceptions": {
     "cannot_connect": {
       "message": "Unable to connect to the SAFPIS API: {error}"
