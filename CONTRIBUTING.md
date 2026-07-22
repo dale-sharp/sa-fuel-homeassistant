@@ -62,12 +62,16 @@ uv run ruff check .
 uv run ty check
 ```
 
-- **Coverage:** current baseline is ~83% overall — no PR may drop below it. The target is
-  95%+ overall with no module below ~90%, matching the Platinum-tier bar above; this is
-  closed incrementally as changes touch each module, not required to jump to target in a
-  single PR.
+- **Coverage:** current baseline is 100% overall, exceeding the Platinum-tier target of
+  95%+/no module below ~90%. New code should maintain full coverage.
 - `ruff format`/`ruff check` and `ty check` are separate jobs in `.github/workflows/lint.yml`.
   Running them locally first catches a CI failure before you push.
+- **If `ruff check .` shows only `EXE002` findings inside the devcontainer** on a Windows
+  host: this is a known, harmless local artifact — the Windows→WSL2 bind mount reports every
+  file as mode `0777`, regardless of git's actually-tracked (correct, non-executable)
+  permissions. It never appears in CI (a native Linux checkout, no bind mount). Run
+  `uv run ruff check . --config .devcontainer/ruff-devcontainer.toml` locally to filter it
+  out — that override file is never used by CI, so it can't mask a real finding there.
 - `pytest` isn't run in CI — it's the local gate. Paste its actual output (not just
   pass/fail) into your PR's test plan.
 - **PRs that change `custom_components/sa_fuel_pricing/` bump the version** —
