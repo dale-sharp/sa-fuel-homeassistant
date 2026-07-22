@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.9] - 2026-07-22
+
+### Changed
+
+- Migrated the toolchain (devcontainer, `ruff`, `ty`, `requires-python`) from Python
+  3.13 to 3.14, and removed `requires-python`'s upper bound entirely. Home Assistant
+  core dropped Python 3.13 support in its recent releases, which had silently frozen
+  this repo's `homeassistant`/`pytest-homeassistant-custom-component`/`aiohttp`
+  Dependabot updates for roughly 5 months — no update PR for that group had been
+  possible since the version cap made every newer release mathematically
+  unresolvable. Matches the devcontainer/`requires-python`-only precedent set by #25.
+- `ruff format` now emits Python 3.14's PEP 758 unparenthesized multi-exception
+  `except` syntax (e.g. `except ValueError, TypeError:`), applied automatically to
+  `api.py` and `config_flow.py` by the `target-version = "py314"` bump. Verified this
+  syntax is valid and correctly behaves as expected under Python 3.14.6 before
+  accepting the change — it's new syntax added by PEP 758, not the removed Python 2
+  form it superficially resembles.
+
 ## [1.1.8] - 2026-07-22
 
 ### Fixed
