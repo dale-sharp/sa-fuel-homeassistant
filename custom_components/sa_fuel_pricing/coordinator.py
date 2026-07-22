@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util.dt import utcnow
@@ -24,6 +25,8 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DEVICE_IDENTIFIER_PREFIX,
     DOMAIN,
+    ISSUE_PERSISTENT_FETCH_FAILURE,
+    PERSISTENT_FETCH_FAILURE_THRESHOLD,
     REFERENCE_DATA_UPDATE_INTERVAL,
 )
 
@@ -57,6 +60,9 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
         # Tracks which (site_id, fuel_id) pairs have had entities created.
         # Used by sensor.py to detect new combos without re-scanning everything.
         self.tracked_entity_keys: set[tuple[int, int]] = set()
+        # Consecutive _async_update_data failures since the last success.
+        # ConfigEntryAuthFailed is excluded — HA's own reauth flow covers it.
+        self._consecutive_failure_count: int = 0
 
         super().__init__(
             hass,
@@ -146,9 +152,13 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
 
             # Always fetch fresh prices
             all_prices = await api.get_site_prices(fuel_type_map)
-        except (UpdateFailed, ConfigEntryAuthFailed):
+        except ConfigEntryAuthFailed:
+            raise
+        except UpdateFailed:
+            self._register_failure()
             raise
         except Exception as err:
+            self._register_failure()
             raise UpdateFailed(f"Unexpected error fetching SAFPIS data: {err}") from err
 
         # --- Site filter ---
@@ -178,6 +188,8 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
         # --- Stale device removal ---
         self._remove_stale_devices(filtered_prices)
 
+        self._clear_failure()
+
         return SAFuelData(
             sites=sites,
             prices=filtered_prices,
@@ -185,6 +197,33 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
             fuel_types=fuel_type_map,
             geo_regions=geo_regions,
         )
+
+    def _register_failure(self) -> None:
+        """Track a fetch failure and raise a repair issue once sustained."""
+        self._consecutive_failure_count += 1
+        if self._consecutive_failure_count >= PERSISTENT_FETCH_FAILURE_THRESHOLD:
+            ir.async_create_issue(
+                self.hass,
+                DOMAIN,
+                f"{ISSUE_PERSISTENT_FETCH_FAILURE}_{self._entry.entry_id}",
+                is_fixable=False,
+                severity=ir.IssueSeverity.WARNING,
+                translation_key=ISSUE_PERSISTENT_FETCH_FAILURE,
+                translation_placeholders={
+                    "entry_title": self._entry.title,
+                    "threshold": str(PERSISTENT_FETCH_FAILURE_THRESHOLD),
+                },
+            )
+
+    def _clear_failure(self) -> None:
+        """Reset the failure counter and clear any repair issue on success."""
+        if self._consecutive_failure_count > 0:
+            ir.async_delete_issue(
+                self.hass,
+                DOMAIN,
+                f"{ISSUE_PERSISTENT_FETCH_FAILURE}_{self._entry.entry_id}",
+            )
+            self._consecutive_failure_count = 0
 
     def reference_snapshot(self) -> SAFuelData:
         """

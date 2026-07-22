@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.update_coordinator import UpdateFailed
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
@@ -21,6 +22,7 @@ from custom_components.sa_fuel_pricing.const import (
     DEFAULT_SCAN_INTERVAL_MINUTES,
     DEVICE_IDENTIFIER_PREFIX,
     DOMAIN,
+    PERSISTENT_FETCH_FAILURE_THRESHOLD,
 )
 from custom_components.sa_fuel_pricing.coordinator import SAFuelDataCoordinator
 
@@ -292,3 +294,115 @@ async def test_reference_snapshot_returns_empty_data_before_first_refresh(
     assert coordinator.data is None
     snapshot = coordinator.reference_snapshot()
     assert snapshot == SAFuelData()
+
+
+# --- Repair issue: sustained fetch failure ---
+
+
+async def test_no_issue_before_threshold(hass, coordinator, mock_api_client):
+    mock_api_client.get_site_prices = AsyncMock(side_effect=UpdateFailed("boom"))
+    with (
+        patch.object(coordinator, "get_api", return_value=mock_api_client),
+        patch(
+            "custom_components.sa_fuel_pricing.coordinator.ir.async_create_issue"
+        ) as mock_create,
+    ):
+        for _ in range(PERSISTENT_FETCH_FAILURE_THRESHOLD - 1):
+            await coordinator.async_refresh()
+
+    mock_create.assert_not_called()
+
+
+async def test_issue_created_on_threshold_failure(hass, coordinator, mock_api_client):
+    mock_api_client.get_site_prices = AsyncMock(side_effect=UpdateFailed("boom"))
+    with (
+        patch.object(coordinator, "get_api", return_value=mock_api_client),
+        patch(
+            "custom_components.sa_fuel_pricing.coordinator.ir.async_create_issue"
+        ) as mock_create,
+    ):
+        for _ in range(PERSISTENT_FETCH_FAILURE_THRESHOLD):
+            await coordinator.async_refresh()
+
+    mock_create.assert_called_once_with(
+        hass,
+        DOMAIN,
+        f"persistent_fetch_failure_{coordinator._entry.entry_id}",
+        is_fixable=False,
+        severity=ir.IssueSeverity.WARNING,
+        translation_key="persistent_fetch_failure",
+        translation_placeholders={
+            "entry_title": coordinator._entry.title,
+            "threshold": str(PERSISTENT_FETCH_FAILURE_THRESHOLD),
+        },
+    )
+
+
+async def test_auth_failure_does_not_increment_or_create_issue(
+    hass, coordinator, mock_api_client
+):
+    mock_api_client.get_brands = AsyncMock(side_effect=ConfigEntryAuthFailed("401"))
+    with (
+        patch.object(coordinator, "get_api", return_value=mock_api_client),
+        patch(
+            "custom_components.sa_fuel_pricing.coordinator.ir.async_create_issue"
+        ) as mock_create,
+    ):
+        for _ in range(PERSISTENT_FETCH_FAILURE_THRESHOLD + 2):
+            await coordinator.async_refresh()
+
+    mock_create.assert_not_called()
+    assert coordinator._consecutive_failure_count == 0
+
+
+async def test_success_after_failures_clears_issue_and_resets_counter(
+    hass, coordinator, mock_api_client
+):
+    failing_client = MagicMock()
+    failing_client.get_brands = AsyncMock(side_effect=UpdateFailed("boom"))
+    with (
+        patch("custom_components.sa_fuel_pricing.coordinator.ir.async_create_issue"),
+        patch(
+            "custom_components.sa_fuel_pricing.coordinator.ir.async_delete_issue"
+        ) as mock_delete,
+    ):
+        with patch.object(coordinator, "get_api", return_value=failing_client):
+            for _ in range(PERSISTENT_FETCH_FAILURE_THRESHOLD):
+                await coordinator.async_refresh()
+
+        with patch.object(coordinator, "get_api", return_value=mock_api_client):
+            await coordinator.async_refresh()
+
+    mock_delete.assert_called_once_with(
+        hass, DOMAIN, f"persistent_fetch_failure_{coordinator._entry.entry_id}"
+    )
+    assert coordinator._consecutive_failure_count == 0
+
+
+async def test_recovery_requires_fresh_failures_to_refire(
+    hass, coordinator, mock_api_client
+):
+    failing_client = MagicMock()
+    failing_client.get_brands = AsyncMock(side_effect=UpdateFailed("boom"))
+    with (
+        patch(
+            "custom_components.sa_fuel_pricing.coordinator.ir.async_create_issue"
+        ) as mock_create,
+        patch("custom_components.sa_fuel_pricing.coordinator.ir.async_delete_issue"),
+    ):
+        with patch.object(coordinator, "get_api", return_value=failing_client):
+            for _ in range(PERSISTENT_FETCH_FAILURE_THRESHOLD):
+                await coordinator.async_refresh()
+        assert mock_create.call_count == 1
+
+        with patch.object(coordinator, "get_api", return_value=mock_api_client):
+            await coordinator.async_refresh()
+
+        with patch.object(coordinator, "get_api", return_value=failing_client):
+            for _ in range(PERSISTENT_FETCH_FAILURE_THRESHOLD - 1):
+                await coordinator.async_refresh()
+        assert mock_create.call_count == 1
+
+        with patch.object(coordinator, "get_api", return_value=failing_client):
+            await coordinator.async_refresh()
+    assert mock_create.call_count == 2
