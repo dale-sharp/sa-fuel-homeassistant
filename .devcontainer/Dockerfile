@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/python:3.13
+FROM mcr.microsoft.com/devcontainers/python:3.14
 
 # uv, copied as a static binary (matches astral's own recommended devcontainer pattern) —
 # no curl/install-script needed at build time.
