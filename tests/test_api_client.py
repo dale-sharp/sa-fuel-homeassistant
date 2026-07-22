@@ -49,6 +49,24 @@ def _make_error_session(status: int) -> MagicMock:
     return mock_session
 
 
+def _make_timeout_session() -> MagicMock:
+    """A mock aiohttp session whose request raises TimeoutError."""
+    mock_cm = AsyncMock()
+    mock_cm.__aenter__ = AsyncMock(side_effect=TimeoutError)
+    mock_session = MagicMock()
+    mock_session.get = MagicMock(return_value=mock_cm)
+    return mock_session
+
+
+def _make_client_error_session() -> MagicMock:
+    """A mock aiohttp session whose request raises a generic ClientError."""
+    mock_cm = AsyncMock()
+    mock_cm.__aenter__ = AsyncMock(side_effect=aiohttp.ClientConnectionError("boom"))
+    mock_session = MagicMock()
+    mock_session.get = MagicMock(return_value=mock_cm)
+    return mock_session
+
+
 async def test_get_brands_parses_response():
     """get_brands() returns a brand_id -> name dict from the API JSON."""
     client = SAFuelAPIClient(_make_mock_session("api_brands.json"), "test-token")
@@ -97,5 +115,26 @@ async def test_client_raises_auth_failed_on_401():
 async def test_client_raises_update_failed_on_other_http_error():
     """Non-auth HTTP errors (e.g. 500) are translated to UpdateFailed."""
     client = SAFuelAPIClient(_make_error_session(500), "test-token")
+    with pytest.raises(UpdateFailed):
+        await client.get_brands()
+
+
+async def test_get_geo_regions_parses_response():
+    """get_geo_regions() returns a (level, id) -> name dict from the API JSON."""
+    client = SAFuelAPIClient(_make_mock_session("api_geo_regions.json"), "test-token")
+    result = await client.get_geo_regions()
+    assert result == TEST_GEO_REGIONS
+
+
+async def test_client_raises_update_failed_on_timeout():
+    """A TimeoutError from the session is translated to UpdateFailed."""
+    client = SAFuelAPIClient(_make_timeout_session(), "test-token")
+    with pytest.raises(UpdateFailed):
+        await client.get_brands()
+
+
+async def test_client_raises_update_failed_on_generic_client_error():
+    """A generic aiohttp.ClientError is translated to UpdateFailed."""
+    client = SAFuelAPIClient(_make_client_error_session(), "test-token")
     with pytest.raises(UpdateFailed):
         await client.get_brands()

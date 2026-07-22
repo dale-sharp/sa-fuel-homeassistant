@@ -286,3 +286,11 @@ async def test_config_entry_auth_failed_propagates(hass, coordinator, mock_api_c
         pytest.raises(ConfigEntryAuthFailed),
     ):
         await coordinator._async_update_data()
+
+
+async def test_reference_snapshot_returns_empty_data_before_first_refresh(
+    hass, coordinator
+):
+    assert coordinator.data is None
+    snapshot = coordinator.reference_snapshot()
+    assert snapshot == SAFuelData()

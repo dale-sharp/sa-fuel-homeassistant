@@ -10,6 +10,7 @@ from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.sa_fuel_pricing.config_flow import (
+    SAFuelPricingOptionsFlow,
     _FlowReferenceData,
     _SiteSummary,
 )
@@ -144,3 +145,34 @@ async def test_options_flow_api_failure_on_open_aborts(hass, config_entry, caplo
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "cannot_connect"
     assert "Failed to fetch SAFPIS reference data in options flow" in caplog.text
+
+
+# --- Defensive _ref-is-None guards ---
+
+
+async def test_options_cities_step_aborts_when_ref_not_set(config_entry):
+    flow = SAFuelPricingOptionsFlow(config_entry)
+    result = await flow.async_step_cities()
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "unknown"
+
+
+async def test_options_suburbs_step_aborts_when_ref_not_set(config_entry):
+    flow = SAFuelPricingOptionsFlow(config_entry)
+    result = await flow.async_step_suburbs()
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "unknown"
+
+
+async def test_options_sites_step_aborts_when_ref_not_set(config_entry):
+    flow = SAFuelPricingOptionsFlow(config_entry)
+    result = await flow.async_step_sites()
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "unknown"
+
+
+async def test_options_fuel_types_step_aborts_when_ref_not_set(config_entry):
+    flow = SAFuelPricingOptionsFlow(config_entry)
+    result = await flow.async_step_fuel_types()
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "unknown"

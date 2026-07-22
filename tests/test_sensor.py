@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock
+
 from custom_components.sa_fuel_pricing.const import FUEL_IDS_DISABLED_BY_DEFAULT
 from custom_components.sa_fuel_pricing.coordinator import SAFuelData
-from custom_components.sa_fuel_pricing.sensor import SAFuelSensor
+from custom_components.sa_fuel_pricing.sensor import SAFuelSensor, async_setup_entry
 
 from .conftest import (
     PRICE_A_ULP,
@@ -118,3 +120,75 @@ def test_standard_fuel_types_are_enabled_by_default(coordinator):
     sensor = _sensor(coordinator, SITE_A, fuel_id=2)
     # _attr_entity_registry_enabled_default defaults to True when not overridden
     assert getattr(sensor, "_attr_entity_registry_enabled_default", True) is True
+
+
+# --- Platform setup (async_setup_entry) ---
+
+
+async def test_platform_setup_creates_entity_per_site_fuel_pair(
+    hass, config_entry, coordinator
+):
+    coordinator.data = TEST_DATA
+    config_entry.runtime_data = coordinator
+    async_add_entities = MagicMock()
+
+    await async_setup_entry(hass, config_entry, async_add_entities)
+
+    async_add_entities.assert_called_once()
+    added = async_add_entities.call_args[0][0]
+    assert len(added) == 6  # 3 sites x 2 fuel entries each in TEST_DATA
+    assert len(coordinator.tracked_entity_keys) == 6
+
+
+async def test_platform_setup_skips_site_without_details(
+    hass, config_entry, coordinator
+):
+    coordinator.data = SAFuelData(
+        sites={},  # no site details at all
+        prices={61205460: {2: PRICE_A_ULP}},
+    )
+    config_entry.runtime_data = coordinator
+    async_add_entities = MagicMock()
+
+    await async_setup_entry(hass, config_entry, async_add_entities)
+
+    async_add_entities.assert_not_called()
+
+
+async def test_platform_setup_adds_nothing_when_data_is_none(
+    hass, config_entry, coordinator
+):
+    coordinator.data = None
+    config_entry.runtime_data = coordinator
+    async_add_entities = MagicMock()
+
+    await async_setup_entry(hass, config_entry, async_add_entities)
+
+    async_add_entities.assert_not_called()
+
+
+async def test_platform_setup_listener_adds_only_new_entities(
+    hass, config_entry, coordinator
+):
+    coordinator.data = TEST_DATA
+    config_entry.runtime_data = coordinator
+    async_add_entities = MagicMock()
+
+    await async_setup_entry(hass, config_entry, async_add_entities)
+    assert len(coordinator.tracked_entity_keys) == 6
+    async_add_entities.reset_mock()
+
+    # A new fuel type appears at an already-tracked site
+    coordinator.data = SAFuelData(
+        sites=TEST_DATA.sites,
+        prices={
+            **TEST_DATA.prices,
+            61205460: {**TEST_DATA.prices[61205460], 99: PRICE_A_ULP},
+        },
+    )
+    coordinator.async_update_listeners()
+
+    async_add_entities.assert_called_once()
+    added = async_add_entities.call_args[0][0]
+    assert len(added) == 1
+    assert len(coordinator.tracked_entity_keys) == 7
