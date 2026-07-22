@@ -9,7 +9,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 
 from .const import DEVICE_IDENTIFIER_PREFIX
-from .coordinator import SAFuelData, SAFuelDataCoordinator
+from .api import SAFuelData
+from .coordinator import SAFuelDataCoordinator
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant

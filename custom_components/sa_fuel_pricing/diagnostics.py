@@ -12,7 +12,8 @@ if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
     from . import SAFuelConfigEntry
-    from .coordinator import SAFuelData, SAFuelDataCoordinator
+    from .api import SAFuelData
+    from .coordinator import SAFuelDataCoordinator
 
 # Fields that must never appear in diagnostics output.
 _TO_REDACT = {CONF_SUBSCRIBER_TOKEN}

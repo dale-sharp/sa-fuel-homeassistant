@@ -15,7 +15,7 @@ from custom_components.sa_fuel_pricing import (
     async_unload_entry,
 )
 from custom_components.sa_fuel_pricing.const import DEVICE_IDENTIFIER_PREFIX, DOMAIN
-from custom_components.sa_fuel_pricing.coordinator import SAFuelData
+from custom_components.sa_fuel_pricing.api import SAFuelData
 
 from .conftest import (
     TEST_BRANDS,

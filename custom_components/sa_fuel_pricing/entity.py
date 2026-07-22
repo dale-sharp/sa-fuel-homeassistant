@@ -6,7 +6,8 @@ from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DEVICE_IDENTIFIER_PREFIX, DOMAIN
-from .coordinator import SAFuelDataCoordinator, SiteDetail
+from .api import SiteDetail
+from .coordinator import SAFuelDataCoordinator
 
 
 class SAFuelEntity(CoordinatorEntity[SAFuelDataCoordinator]):
