@@ -1,0 +1,20 @@
+# Local-only override for running ruff inside this repo's devcontainer on a Windows host.
+#
+# Podman/Docker bind-mounts the Windows host directory into the container via WSL2's 9p
+# ("drvfs") filesystem, which reports every file as mode 0777 owned by root, regardless of
+# git's actually-tracked permissions — confirmed empirically: `git ls-files -s` shows every
+# flagged file as 100644 (non-executable), and CI (which lints a native Linux checkout, no
+# bind mount involved) never sees this. It's a presentation artifact of this one local
+# environment, not a real problem with the repo.
+#
+# This is NOT used by CI or by `.ruff.toml` (the single source of truth both CI and a
+# default `ruff check .` read) — it only applies when explicitly passed via `--config`, so
+# it can never silently weaken the real, CI-enforced rule set. Use it locally with:
+#
+#   uv run ruff check . --config .devcontainer/ruff-devcontainer.toml
+extend = "../.ruff.toml"
+
+[lint]
+extend-ignore = [
+    "EXE002",  # spurious: bind-mount always reports 0777, see comment above
+]
