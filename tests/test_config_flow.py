@@ -228,6 +228,30 @@ async def test_duplicate_token_aborts(hass):
     assert result["reason"] == "already_configured"
 
 
+async def test_duplicate_token_different_case_aborts(hass):
+    await _run_full_flow(hass)  # first setup, uses _TEST_TOKEN
+
+    with (
+        patch(
+            "custom_components.sa_fuel_pricing.config_flow._validate_token",
+            AsyncMock(return_value=_TEST_FUEL_TYPES),
+        ),
+        patch(
+            "custom_components.sa_fuel_pricing.config_flow._fetch_reference_data",
+            AsyncMock(return_value=_MOCK_REF),
+        ),
+    ):
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": config_entries.SOURCE_USER}
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {CONF_SUBSCRIBER_TOKEN: _TEST_TOKEN.lower()}
+        )
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "already_configured"
+
+
 async def test_no_cities_selected_entry_has_empty_lists(hass):
     result = await _run_full_flow(hass)
 
@@ -309,6 +333,30 @@ async def test_reconfigure_same_account_updates_entry(hass):
         )
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"], {CONF_SUBSCRIBER_TOKEN: _TEST_TOKEN}
+        )
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "reconfigure_successful"
+
+
+async def test_reconfigure_same_account_different_case_updates_entry(hass):
+    """Reconfigure with the same token in different casing still matches the account."""
+    await _run_full_flow(hass)
+    entry = hass.config_entries.async_entries(DOMAIN)[0]
+
+    with patch(
+        "custom_components.sa_fuel_pricing.config_flow._validate_token",
+        AsyncMock(return_value=_TEST_FUEL_TYPES),
+    ):
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={
+                "source": config_entries.SOURCE_RECONFIGURE,
+                "entry_id": entry.entry_id,
+            },
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {CONF_SUBSCRIBER_TOKEN: _TEST_TOKEN.lower()}
         )
 
     assert result["type"] is FlowResultType.ABORT
