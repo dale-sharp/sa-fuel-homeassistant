@@ -419,7 +419,7 @@ class SAFuelPricingConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors["base"] = str(err)
             else:
                 self._token = token
-                await self.async_set_unique_id(token)
+                await self.async_set_unique_id(token.lower())
                 self._abort_if_unique_id_configured()
                 return await self.async_step_cities()
 
@@ -600,7 +600,7 @@ class SAFuelPricingConfigFlow(ConfigFlow, domain=DOMAIN):
             except ValueError as err:
                 errors["base"] = str(err)
             else:
-                await self.async_set_unique_id(token)
+                await self.async_set_unique_id(token.lower())
                 self._abort_if_unique_id_mismatch(reason="wrong_account")
                 return self.async_update_reload_and_abort(
                     self._get_reconfigure_entry(),

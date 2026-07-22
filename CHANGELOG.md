@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.8] - 2026-07-22
+
+### Fixed
+
+- Fixed #43: config entry uniqueness detection for the SAFPIS subscriber token is now
+  case-insensitive. Re-entering the same token with different letter casing is now
+  correctly caught as a duplicate (during initial setup) or the same account (during
+  reconfigure), instead of silently creating a redundant second config entry. Found by
+  the adversarial Quality Scale re-review in #40.
+
 ## [1.1.7] - 2026-07-22
 
 ### Added
