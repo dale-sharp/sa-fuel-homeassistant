@@ -10,6 +10,8 @@ A [Home Assistant](https://www.home-assistant.io/) integration that brings South
 
 Each fuel station appears as a **device**. Each fuel type available at that station becomes a **sensor** showing the current price in **AUD/L**, updated as frequently as every minute.
 
+Track prices near your regular commute, compare stations before a road trip, or automate a notification the moment your preferred station's price drops — see [Example Automation](#example-automation) below.
+
 ---
 
 ## Requirements
@@ -116,6 +118,33 @@ After setup you can adjust your configuration at any time:
 ## Dynamic updates
 
 New fuel stations that appear in the API are automatically added as devices on the next poll. Stations that disappear (e.g. permanently closed) are automatically removed from the device registry. You can also manually delete a device from its device page — the delete button is enabled for any station that no longer has active prices.
+
+---
+
+## Example Automation
+
+Notify when a tracked station's fuel price drops below a threshold:
+
+```yaml
+automation:
+  - alias: "Notify when Unleaded drops below $1.60"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.otr_dry_creek_unleaded
+        below: 1.60
+    action:
+      - service: notify.mobile_app_my_phone
+        data:
+          title: "Fuel price drop"
+          message: >
+            Unleaded at {{ state_attr('sensor.otr_dry_creek_unleaded', 'site_name') }}
+            is now ${{ states('sensor.otr_dry_creek_unleaded') }}/L.
+```
+
+`sensor.otr_dry_creek_unleaded` is a placeholder — your own tracked stations will have
+different entity IDs based on their station and fuel type names. Find yours under
+**Settings → Devices & Services → SA Fuel Pricing**, or via **Settings → Devices & Services
+→ Entities**.
 
 ---
 
