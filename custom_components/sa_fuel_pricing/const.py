@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+from typing import Final
 
 DOMAIN = "sa_fuel_pricing"
 DEVICE_IDENTIFIER_PREFIX = "sa_fuel_"
@@ -37,6 +38,10 @@ PRICE_UNAVAILABLE = 9999
 # API prices are in tenths-of-a-cent (e.g. 1579 = $1.579/L).
 # Divide by 1000 to convert to dollars per litre.
 PRICE_DIVISOR = 1000.0
+
+# Repair issue: fired after this many consecutive fetch failures.
+PERSISTENT_FETCH_FAILURE_THRESHOLD: Final[int] = 3
+ISSUE_PERSISTENT_FETCH_FAILURE: Final[str] = "persistent_fetch_failure"
 
 # Fuel type IDs known to appear in SA price data
 FUEL_TYPE_UNLEADED = 2
