@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Tests for SAFuelPricingConfigFlow."""
 
 from __future__ import annotations

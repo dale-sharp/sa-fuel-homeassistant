@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """API client and data models for the SA Fuel Pricing integration."""
 
 from __future__ import annotations

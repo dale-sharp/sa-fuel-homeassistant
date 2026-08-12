@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Tests for async_get_config_entry_diagnostics."""
 
 from __future__ import annotations

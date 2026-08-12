@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Unit tests for SAFuelData, SiteDetail, and SitePrice data models."""
 
 from __future__ import annotations

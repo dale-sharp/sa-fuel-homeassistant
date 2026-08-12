@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Tests for the SA Fuel Pricing integration's setup/unload/reload lifecycle."""
 
 from __future__ import annotations
