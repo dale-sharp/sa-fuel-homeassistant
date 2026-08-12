@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Tests for SAFuelAPIClient JSON-parsing and error-mapping."""
 
 from __future__ import annotations

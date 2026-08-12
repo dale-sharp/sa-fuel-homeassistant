@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Diagnostics support for SA Fuel Pricing."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Shared test fixtures for SA Fuel Pricing tests."""
 
 from __future__ import annotations

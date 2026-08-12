@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Config flow for the SA Fuel Pricing integration."""
 
 from __future__ import annotations

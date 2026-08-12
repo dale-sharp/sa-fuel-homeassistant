@@ -16,7 +16,7 @@ Track prices near your regular commute, compare stations before a road trip, or 
 
 ## Requirements
 
-- Home Assistant 2024.1.0 or newer
+- Home Assistant 2026.3.0 or newer
 - A SAFPIS Data Publisher subscriber token — register at [safuelpricinginformation.com.au](https://www.safuelpricinginformation.com.au/publishers.html)
 
 ---

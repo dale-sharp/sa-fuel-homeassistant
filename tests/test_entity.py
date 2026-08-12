@@ -1,3 +1,5 @@
+# Copyright (c) 2026 dale-sharp
+
 """Tests for SAFuelEntity."""
 
 from __future__ import annotations
