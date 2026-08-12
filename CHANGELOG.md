@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.10] - 2026-08-12
+
+### Changed
+
+- Raised the minimum supported Home Assistant version to 2026.3.0, Home Assistant core's
+  first release built on Python 3.14. 1.1.9's toolchain migration made `ruff format` emit
+  PEP 758's unparenthesized multi-exception `except` syntax in `api.py`/`config_flow.py`;
+  any earlier HA version runs on an older Python that cannot parse that syntax at all.
+- Added a one-line copyright notice to the top of every shipped module (no behavior
+  change), to satisfy ruff's `CPY001` rule — part of this repo's `select = ["ALL"]`
+  ruleset, newly stabilized out of preview upstream and previously unenforced.
+
 ## [1.1.9] - 2026-07-22
 
 ### Changed
