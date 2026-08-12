@@ -6,10 +6,10 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "pytest-homeassistant-custom-component>=0.13.0",
+    "pytest-homeassistant-custom-component>=0.13.355",
     "pytest-cov>=5.0.0",
-    "ruff>=0.15.22",
-    "ty>=0.0.61",
+    "ruff>=0.16.2",
+    "ty>=0.0.69",
 ]
 
 [tool.pytest.ini_options]
