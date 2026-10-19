@@ -228,8 +228,9 @@ async def test_stale_device_removed_when_site_drops_from_prices(
     with patch.object(coordinator, "get_api", return_value=mock_api_client):
         await coordinator.async_refresh()
 
-    device = device_registry.async_get_device(
-        identifiers={(DOMAIN, f"{DEVICE_IDENTIFIER_PREFIX}61501009")}
+    device = device_registry.async_get_device_by_identifier(
+        (DOMAIN, f"{DEVICE_IDENTIFIER_PREFIX}61501009"),
+        coordinator._entry.entry_id,
     )
     assert device is None
 

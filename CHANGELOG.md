@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.11] - 2026-10-19
+
+### Changed
+
+- Raised the minimum supported Home Assistant version to 2026.8.0. Stale-device cleanup now
+  uses `DeviceRegistry.async_get_device_by_identifier` and `async_remove_device`, which
+  Home Assistant introduced in 2026.8 when it restricted each device to a single config entry.
+  The previous `async_get_device` and `async_update_device(remove_config_entry_id=...)` calls
+  are deprecated and scheduled for removal in Home Assistant 2027.8.0.
+- Refreshed development dependencies and `uv.lock`: `ruff` 0.16.6 → 0.17.1, `ty` 0.0.78 → 0.0.89,
+  `pytest-homeassistant-custom-component` 0.13.356 → 0.13.367 (with the `homeassistant` 2026.9.4
+  it pins), `urllib3` 2.7.0 → 2.8.0, plus transitive updates. Supersedes Dependabot PRs #74, #83,
+  #87 and #88.
+- `homeassistant` is deliberately held below 2026.10 in the test environment: that release swaps
+  `voluptuous` for `probatio` in config flows, which this integration has not been migrated to yet.
+- Disabled ty's `invalid-property-type-override` rule, which newer ty versions raise against the
+  standard Home Assistant `@property` entity overrides.
+- Bumped GitHub Action pins: `astral-sh/setup-uv` v10.3.0 and the `home-assistant/actions/hassfest`
+  master HEAD. Supersedes #85 and #86.
+
+---
+
 ## [1.1.10] - 2026-08-12
 
 ### Changed
