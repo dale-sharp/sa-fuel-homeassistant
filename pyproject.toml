@@ -1,15 +1,15 @@
 [project]
 name = "sa-fuel-homeassistant"
-version = "1.1.10"
+version = "1.1.11"
 requires-python = ">=3.14.2"
 dependencies = []
 
 [dependency-groups]
 dev = [
-    "pytest-homeassistant-custom-component>=0.13.356",
+    "pytest-homeassistant-custom-component>=0.13.373",
     "pytest-cov>=5.0.0",
-    "ruff>=0.16.6",
-    "ty>=0.0.78",
+    "ruff>=0.17.1",
+    "ty>=0.0.89",
 ]
 
 [tool.pytest.ini_options]
@@ -24,6 +24,7 @@ source = ["custom_components/sa_fuel_pricing"]
 
 [tool.coverage.report]
 exclude_lines = [
+    "pragma: no cover",
     "if TYPE_CHECKING:",
 ]
 
@@ -32,3 +33,9 @@ python-version = "3.14"
 
 [tool.ty.rules]
 blanket-ignore-comment = "error"
+# Home Assistant declares `native_value`, `extra_state_attributes` and `available` as
+# writable propcache `cached_property` descriptors, so the standard read-only @property
+# override every HA entity uses is reported as "read-only overrides writable". The override
+# is valid at runtime (HA's CachedProperties metaclass handles it); this is the common
+# setting across HA integrations.
+invalid-property-type-override = "ignore"

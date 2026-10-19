@@ -254,15 +254,13 @@ class SAFuelDataCoordinator(DataUpdateCoordinator[SAFuelData]):
             return
         device_registry = dr.async_get(self.hass)
         for stale_id in stale_site_ids:
-            device = device_registry.async_get_device(
-                identifiers={(DOMAIN, f"{DEVICE_IDENTIFIER_PREFIX}{stale_id}")}
+            device = device_registry.async_get_device_by_identifier(
+                (DOMAIN, f"{DEVICE_IDENTIFIER_PREFIX}{stale_id}"),
+                self._entry.entry_id,
             )
             if device:
                 _LOGGER.debug("Removing stale device for site_id %s", stale_id)
-                device_registry.async_update_device(
-                    device_id=device.id,
-                    remove_config_entry_id=self._entry.entry_id,
-                )
+                device_registry.async_remove_device(device.id)
 
     def restore_reference_stash(self, stash: SAFuelData) -> None:
         """

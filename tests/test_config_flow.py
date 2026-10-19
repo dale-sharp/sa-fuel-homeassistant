@@ -9,7 +9,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import aiohttp
 import pytest
 from homeassistant import config_entries
-from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.data_entry_flow import FlowResultType, InvalidData
+from homeassistant.setup import async_setup_component
 from multidict import CIMultiDict, CIMultiDictProxy
 from yarl import URL
 
@@ -576,3 +577,33 @@ async def test_reconfigure_invalid_token_shows_error(hass):
 def test_describe_filter_with_suburbs():
     result = _describe_filter(_MOCK_REF, city_ids=[189, 190], suburb_ids=[170227225])
     assert result == "suburbs: Dry Creek"
+
+
+async def test_flow_manager_rejects_missing_token(hass):
+    """Invalid input is reported by the flow manager as InvalidData.
+
+    Home Assistant 2026.9+ validates with probatio, so this only holds if the
+    schema's errors are the engine's own `Invalid` type.
+    """
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+
+    with pytest.raises(InvalidData):
+        await hass.config_entries.flow.async_configure(result["flow_id"], user_input={})
+
+
+async def test_config_flow_form_serialises_for_frontend(hass, hass_client):
+    """The user-step form is serialised through the frontend's REST API."""
+    assert await async_setup_component(hass, "config", {})
+    client = await hass_client()
+
+    response = await client.post(
+        "/api/config/config_entries/flow", json={"handler": DOMAIN}
+    )
+
+    assert response.status == 200
+    body = await response.json()
+    assert body["type"] == "form"
+    assert body["step_id"] == "user"
+    assert {field["name"] for field in body["data_schema"]} == {CONF_SUBSCRIBER_TOKEN}

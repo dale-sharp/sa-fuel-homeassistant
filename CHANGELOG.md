@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.11] - 2026-10-19
+
+### Changed
+
+- Raised the minimum supported Home Assistant version to 2026.8.0. Stale-device cleanup now
+  uses `DeviceRegistry.async_get_device_by_identifier` and `async_remove_device`, which
+  Home Assistant introduced in 2026.8 when it restricted each device to a single config entry.
+  The previous `async_get_device` and `async_update_device(remove_config_entry_id=...)` calls
+  are deprecated and scheduled for removal in Home Assistant 2027.8.0.
+- `config_flow.py` now imports `probatio` for its form schemas, falling back to `voluptuous` on Home
+  Assistant releases older than 2026.9 (the supported floor is 2026.8.0). Home Assistant 2026.9+
+  replaced `voluptuous` with `probatio` and aliases the old name at runtime, so forms already worked;
+  the change makes the schemas type-check against `async_show_form` on 2026.10+.
+- Refreshed development dependencies and `uv.lock`: `ruff` 0.16.6 → 0.17.1, `ty` 0.0.78 → 0.0.89,
+  `pytest-homeassistant-custom-component` 0.13.356 → 0.13.373 (with the `homeassistant` 2026.10.2
+  it pins), `urllib3` 2.7.0 → 2.8.0, plus transitive updates. Supersedes Dependabot PRs #74, #83,
+  #87 and #88.
+- Disabled ty's `invalid-property-type-override` rule, which newer ty versions raise against the
+  standard Home Assistant `@property` entity overrides.
+- Bumped GitHub Action pins: `astral-sh/setup-uv` v10.3.0 and the `home-assistant/actions/hassfest`
+  master HEAD. Supersedes #85 and #86.
+- Restored coverage.py's default `pragma: no cover` exclusion, which the custom `exclude_lines`
+  list had been replacing.
+
+### Added
+
+- Config flow tests that submit invalid input through the flow manager and fetch the user form through
+  Home Assistant's REST API, covering schema validation and frontend serialisation on the `probatio` engine.
+
+---
+
 ## [1.1.10] - 2026-08-12
 
 ### Changed
