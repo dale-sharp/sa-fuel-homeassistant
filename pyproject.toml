@@ -6,7 +6,7 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "pytest-homeassistant-custom-component>=0.13.367",
+    "pytest-homeassistant-custom-component>=0.13.373",
     "pytest-cov>=5.0.0",
     "ruff>=0.17.1",
     "ty>=0.0.89",
@@ -24,6 +24,7 @@ source = ["custom_components/sa_fuel_pricing"]
 
 [tool.coverage.report]
 exclude_lines = [
+    "pragma: no cover",
     "if TYPE_CHECKING:",
 ]
 
