@@ -9,7 +9,7 @@ dev = [
     "pytest-homeassistant-custom-component>=0.13.373",
     "pytest-cov>=5.0.0",
     "ruff>=0.17.2",
-    "ty>=0.0.89",
+    "ty>=0.0.92",
 ]
 
 [tool.pytest.ini_options]
