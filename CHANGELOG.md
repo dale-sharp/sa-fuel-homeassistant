@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.12] - 2026-11-19
+
+### Changed
+
+- No runtime dependency changes in this release: the integration declares no `requirements`
+  and still has no third-party runtime dependencies.
+- Refreshed development dependencies and `uv.lock`: `ruff` 0.17.1 → 0.17.5, `ty` 0.0.89 → 0.0.104,
+  `pytest-homeassistant-custom-component` 0.13.373 → 0.13.375 (with the `homeassistant` 2026.10.2 →
+  2026.10.4 it pins), `certifi` 2026.10.18 → 2026.10.19 and `uv` 0.12.23 → 0.13.5. These are
+  test and tooling dependencies only and are not installed with the integration.
+- Renamed ty's `invalid-property-type-override` rule to `incompatible-property-override` in
+  `pyproject.toml` to match ty 0.0.104.
+- Bumped GitHub Action pins: `astral-sh/setup-uv` v10.3.0 → v10.3.3, `softprops/action-gh-release`
+  v3.0.3 → v3.0.4 and the `home-assistant/actions/hassfest` master HEAD.
+
+---
+
 ## [1.1.11] - 2026-10-19
 
 ### Changed
