@@ -38,4 +38,4 @@ blanket-ignore-comment = "error"
 # override every HA entity uses is reported as "read-only overrides writable". The override
 # is valid at runtime (HA's CachedProperties metaclass handles it); this is the common
 # setting across HA integrations.
-invalid-property-type-override = "ignore"
+incompatible-property-override = "ignore"
